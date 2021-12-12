@@ -1,7 +1,7 @@
 # Image
 FROM python:alpine
 
-# If this is set to a non-empty string
+# Display the Python output through the terminal
 ENV PYTHONUNBUFFERED: 1
 
 # Set work directory
