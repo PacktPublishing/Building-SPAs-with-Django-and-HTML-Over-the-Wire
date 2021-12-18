@@ -7,5 +7,6 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     entrypoint: python3 hello.py
+    #entrypoint: django-admin --version
     volumes:
       - .:/usr/src/app/

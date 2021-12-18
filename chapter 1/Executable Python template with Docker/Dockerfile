@@ -1,15 +1,11 @@
 # Image
-FROM python:alpine
+FROM python:3.10
 
 # Display the Python output through the terminal
 ENV PYTHONUNBUFFERED: 1
 
 # Set work directory
 WORKDIR /usr/src/app
-
-# Add applications
-## Bash
-RUN apk add --no-cache bash
 
 # Add Python dependencies
 ## Update pip
