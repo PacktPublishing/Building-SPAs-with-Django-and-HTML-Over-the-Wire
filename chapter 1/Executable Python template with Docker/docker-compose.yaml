@@ -9,5 +9,8 @@ services:
     entrypoint: python3 hello.py
     #entrypoint: django-admin --version
     #entrypoint: bash start-project.sh
+    #entrypoint: python3 manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
     volumes:
       - .:/usr/src/app/
