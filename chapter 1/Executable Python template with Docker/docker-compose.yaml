@@ -8,5 +8,6 @@ services:
       dockerfile: ./Dockerfile
     entrypoint: python3 hello.py
     #entrypoint: django-admin --version
+    #entrypoint: bash start-project.sh
     volumes:
       - .:/usr/src/app/
