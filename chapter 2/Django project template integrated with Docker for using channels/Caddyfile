@@ -11,6 +11,6 @@ http://hello.localhost {
     file_server
 }
 
-http://hello.webmail {
+http://webmail.localhost {
     reverse_proxy mailhog:8025
 }
