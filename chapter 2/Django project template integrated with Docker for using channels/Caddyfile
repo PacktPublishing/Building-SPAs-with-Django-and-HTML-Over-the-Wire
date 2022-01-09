@@ -1,11 +1,16 @@
-http://hello.localhost
 
-root * /usr/src/app/
+http://hello.localhost {
+    root * /usr/src/app/
 
-@notStatic {
-  not path /static/* /media/*
+    @notStatic {
+      not path /static/* /media/*
+    }
+
+    reverse_proxy @notStatic django:8000
+
+    file_server
 }
 
-reverse_proxy @notStatic django:8000
-
-file_server
+http://hello.webmail {
+    reverse_proxy mailhog:8025
+}

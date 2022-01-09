@@ -10,7 +10,7 @@ services:
     volumes:
       - .:/usr/src/app/
     environment:
-      DEBUG: True
+      DEBUG: "True"
       ALLOWED_HOSTS: hello.localhost
       SECRET_KEY: mysecret
       DB_ENGINE: django.db.backends.postgresql
@@ -26,8 +26,8 @@ services:
       MEDIA_URL: /media/
       DEFAULT_FROM_EMAIL: no-reply@hello.localhost
       EMAIL_HOST: mailhog
-      EMAIL_USE_TLS: False
-      EMAIL_USE_SSL: False
+      EMAIL_USE_TLS: "False"
+      EMAIL_USE_SSL: "False"
       EMAIL_PORT: 1025
       EMAIL_USER:
       EMAIL_PASSWORD:
@@ -68,5 +68,4 @@ services:
     image: mailhog/mailhog:latest
     expose:
       - 1025
-    ports:
-      - 8025:8025
+      - 8025
