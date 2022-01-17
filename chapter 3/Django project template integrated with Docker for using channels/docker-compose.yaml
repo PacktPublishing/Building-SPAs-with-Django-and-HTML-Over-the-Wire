@@ -21,6 +21,8 @@ services:
       DB_PORT: 5432
       DOMAIN: hello.localhost
       DOMAIN_URL: http://hello.localhost
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
       STATIC_URL: /static/
       STATIC_ROOT: static
       MEDIA_URL: /media/
