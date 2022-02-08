@@ -1,20 +1,20 @@
-# app/simple_app/asgi.py
+# hello_world/asgi.py
 import os
-
 from django.core.asgi import get_asgi_application
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
-import app.simple_app.routing
+from django.urls import re_path
+from app.simple_app.consumers import EchoConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hello_world.settings')
 
-application = get_asgi_application()
-
 application = ProtocolTypeRouter({
-  "http": get_asgi_application(),
-  "websocket": AuthMiddlewareStack(
-        URLRouter(
-            app.simple_app.routing.websocket_urlpatterns
-        )
+    # Django's ASGI application to handle traditional HTTP requests
+    "http": get_asgi_application(),
+    # WebSocket handler
+    "websocket": AuthMiddlewareStack(
+        URLRouter([
+            re_path(r"^ws/echo/$", EchoConsumer.as_asgi()),
+        ])
     ),
 })
