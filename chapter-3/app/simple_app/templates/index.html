@@ -23,11 +23,6 @@
             document.querySelector("#welcome").textContent = event.data;
         });
 
-        // Sends a message every second.
-        setInterval(function() {
-            // Send a message to the WebSockets server
-            myWebSocket.send("");
-        }, 1000);
     </script>
 </body>
 </html>
