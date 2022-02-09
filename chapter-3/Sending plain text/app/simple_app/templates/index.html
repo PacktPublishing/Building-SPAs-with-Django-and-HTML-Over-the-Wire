@@ -1,0 +1,28 @@
+{# app/simple_app/templates/index.html #}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Index</title>
+</head>
+<body>
+    <h1>Hello Django!</h1>
+
+    <!-- Place where we will display the connection message. -->
+    <h2 id="welcome"></h2>
+
+    <script>
+        // Connect to WebSockets server (EchoConsumer)
+        const myWebSocket = new WebSocket("ws://{{ request.get_host }}/ws/echo/");
+
+        // Event when a new message is received by WebSockets
+        myWebSocket.addEventListener("message", (event) => {
+            // Display the message in '#welcome'
+            document.querySelector("#welcome").textContent = event.data;
+        });
+
+    </script>
+</body>
+</html>
