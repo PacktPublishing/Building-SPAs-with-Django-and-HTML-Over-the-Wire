@@ -22,9 +22,7 @@ class EchoConsumer(WebsocketConsumer):
                 self.send(text_data=str(datetime.now().strftime("%H:%M:%S")))
                 # Sleep for 1 second
                 time.sleep(1)
-        the_thread = threading.Thread(target=send_time, args=(self,))
-        if not the_thread.is_alive():
-            the_thread.start()
+        threading.Thread(target=send_time, args=(self,)).start()
 
     def disconnect(self, close_code):
         """Event when client disconnects"""
