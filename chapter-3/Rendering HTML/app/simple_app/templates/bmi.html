@@ -1,0 +1,46 @@
+{# app/simple_app/templates/bmi.html #}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>BMI Calculator</title>
+</head>
+<body>
+    <h1>BMI Calculator</h1>
+    <label for="height">Height (cm):
+        <input type="text" name="height" id="height">
+    </label>
+    <label for="weight">Weight (kg)
+        <input type="text" name="weight" id="weight">
+    </label>
+    <input type="button" id="calculate" value="Calculate">
+    <div id="result"></div>
+
+    <script>
+        // Connect to WebSockets server (BingoConsumer)
+        const myWebSocket = new WebSocket("ws://{{ request.get_host }}/ws/bmi/");
+
+        // Event when a new message is received by WebSockets
+        myWebSocket.addEventListener("message", (event) => {
+            const myData = JSON.parse(event.data);
+            switch (myData.action) {
+                case "BMI result":
+                    document.getElementById("result").innerHTML = myData.html;
+                    break;
+            }
+        });
+
+        document.querySelector('#calculate').addEventListener('click', () => {
+            const height = parseFloat(document.querySelector('#height').value);
+            const weight = parseFloat(document.querySelector('#weight').value);
+            myWebSocket.send(JSON.stringify({
+                height: height,
+                weight: weight
+            }));
+        });
+
+    </script>
+</body>
+</html>

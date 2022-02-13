@@ -20,5 +20,6 @@ from app.simple_app import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('bingo/', views.bingo, name='bingo'),
+    path('bmi/', views.bmi, name='bmi'),
     path('admin/', admin.site.urls),
 ]

@@ -1,0 +1,12 @@
+<p><strong>Weight</strong> {{ weight }} Kg</p>
+<p><strong>Height</strong> {{ height }} m</p>
+<p><strong>BMI</strong> {{ bmi }}</p>
+{% if bmi < 18.5 %}
+<p>Underweight</p>
+{% elif bmi < 25 %}
+<p>Normal</p>
+{% elif bmi < 30 %}
+<p>Overweight</p>
+{% else %}
+<p>Obese</p>
+{% endif %}

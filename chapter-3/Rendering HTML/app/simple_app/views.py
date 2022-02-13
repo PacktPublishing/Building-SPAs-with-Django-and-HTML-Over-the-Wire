@@ -5,3 +5,6 @@ def index(request):
 
 def bingo(request):
     return render(request, 'bingo.html', {})
+
+def bmi(request):
+    return render(request, 'bmi.html', {})

@@ -5,6 +5,8 @@ import time
 import threading
 from random import randint
 from channels.generic.websocket import JsonWebsocketConsumer
+from django.template.loader import render_to_string
+
 
 class EchoConsumer(WebsocketConsumer):
 
@@ -70,3 +72,29 @@ class BingoConsumer(JsonWebsocketConsumer):
     def receive_json(self, data):
         """Event when data is received"""
         pass
+
+
+
+class BMIConsumer(JsonWebsocketConsumer):
+
+    def connect(self):
+        self.accept()
+
+    def disconnect(self, close_code):
+        """Event when client disconnects"""
+        pass
+
+    def receive_json(self, data):
+        """Event when data is received"""
+        height = data['height'] / 100
+        weight = data['weight']
+        bmi = round(weight / (height ** 2), 1)
+        self.send_json(
+            content={
+                    "action": "BMI result",
+                    "html": render_to_string(
+                        "components/_bmi_result.html",
+                        {"height": height, "weight": weight, "bmi": bmi}
+                    )
+            }
+        )
