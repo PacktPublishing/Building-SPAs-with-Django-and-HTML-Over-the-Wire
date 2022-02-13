@@ -19,5 +19,6 @@ from app.simple_app import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('bingo/', views.bingo, name='bingo'),
     path('admin/', admin.site.urls),
 ]

@@ -1,0 +1,50 @@
+{# app/simple_app/templates/bingo.html #}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Bingo</title>
+</head>
+<body>
+    <h1>Bingo</h1>
+    <h2>Ball: <span id="ball"></span></h2>
+    <h2 id="ticket"></h2>
+
+    <script>
+        // Connect to WebSockets server (BingoConsumer)
+        const myWebSocket = new WebSocket("ws://{{ request.get_host }}/ws/bingo/");
+        let ticket = [];
+
+        // Event when a new message is received by WebSockets
+        myWebSocket.addEventListener("message", (event) => {
+            const myData = JSON.parse(event.data);
+            switch (myData.action) {
+                case "New ticket":
+                    // Save the new ticket
+                    ticket = myData.ticket;
+                    // Render ticket
+                    document.getElementById("ticket").textContent = "Ticket: " + ticket.join(", ");
+                    break;
+                case "New ball":
+                    // Get the ball number
+                    ball = myData.ball;
+                    // Check if ball is in the ticket and remove it
+                    ticket = ticket.map(item => item === ball ? "X" : item);
+                    // Render ticket
+                    document.getElementById("ticket").textContent = "Ticket: " + ticket.join(", ");
+                    // Render ball
+                    document.getElementById("ball").textContent = ball;
+                    // Check if we have a winner
+                    if (ticket.find(number => number !== "X") === undefined) {
+                        // We have a winner
+                        document.getElementById("ticket").textContent = "Winner!";
+                    }
+                    break;
+            }
+        });
+
+    </script>
+</body>
+</html>
