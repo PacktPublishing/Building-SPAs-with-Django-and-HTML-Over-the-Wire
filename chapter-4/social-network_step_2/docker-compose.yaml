@@ -11,22 +11,22 @@ services:
       - .:/usr/src/app/
     environment:
       DEBUG: "True"
-      ALLOWED_HOSTS: hello.localhost
+      ALLOWED_HOSTS: social-network.localhost
       SECRET_KEY: mysecret
       DB_ENGINE: django.db.backends.postgresql
-      DB_NAME: hello_db
+      DB_NAME: social_network
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_HOST: postgresql
       DB_PORT: 5432
-      DOMAIN: hello.localhost
-      DOMAIN_URL: http://hello.localhost
+      DOMAIN: social-network.localhost
+      DOMAIN_URL: http://social-network.localhost
       REDIS_HOST: redis
       REDIS_PORT: 6379
       STATIC_URL: /static/
       STATIC_ROOT: static
       MEDIA_URL: /media/
-      DEFAULT_FROM_EMAIL: no-reply@hello.localhost
+      DEFAULT_FROM_EMAIL: no-reply@social-network.localhost
       EMAIL_HOST: mailhog
       EMAIL_USE_TLS: "False"
       EMAIL_USE_SSL: "False"
@@ -44,7 +44,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: hello_db
+      POSTGRES_DB: social_network
     volumes:
       - ./postgres_data:/var/lib/postgresql/data/
     expose:

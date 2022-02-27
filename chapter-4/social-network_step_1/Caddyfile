@@ -1,4 +1,5 @@
-http://hello.localhost {
+
+http://social-network.localhost {
 
     root * /usr/src/app/
     encode gzip zstd
