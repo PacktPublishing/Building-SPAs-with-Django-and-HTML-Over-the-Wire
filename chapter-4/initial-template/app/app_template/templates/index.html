@@ -1,27 +1,21 @@
-{# app/app_template/templates/index.html #}
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>Index</title>
+    <title>Hello</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script defer src="{% static 'js/index.js' %}"></script>
 </head>
-<body>
-    <h1>Hello Django!</h1>
-    <main id="main"></main>
-
-    <script>
-        // Connect to WebSockets server (EchoConsumer)
-        const myWebSocket = new WebSocket("ws://{{ request.get_host }}/ws/example/");
-
-        // Event when a new message is received by WebSockets
-        myWebSocket.addEventListener("message", (event) => {
-            const data = JSON.parse(event.data);
-            // Display the message in '#welcome'
-            document.querySelector("#main").innerHTML = data.html;
-        });
-
-    </script>
+<body
+        data-host="{{ request.get_host }}"
+        data-scheme="{{ request.scheme }}"
+>
+    <div class="container">
+        <h1>Hello</h1>
+        <main id="main"></main>
+    </div>
 </body>
 </html>
