@@ -14,7 +14,7 @@ application = ProtocolTypeRouter({
     # WebSocket handler
     "websocket": AuthMiddlewareStack(
         URLRouter([
-            re_path(r"^ws/social-network/$", ExampleConsumer.as_asgi()),
+            re_path(r"^ws/social-network/$", SocialNetworkConsumer.as_asgi()),
         ])
     ),
 })
