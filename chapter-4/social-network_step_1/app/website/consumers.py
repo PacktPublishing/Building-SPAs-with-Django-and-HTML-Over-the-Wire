@@ -2,7 +2,7 @@
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.template.loader import render_to_string
 
-class ExampleConsumer(JsonWebsocketConsumer):
+class SocialNetworkConsumer(JsonWebsocketConsumer):
 
     def connect(self):
         self.accept()

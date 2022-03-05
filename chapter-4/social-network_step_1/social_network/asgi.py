@@ -4,7 +4,7 @@ from django.core.asgi import get_asgi_application
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.urls import re_path
-from app.website.consumers import ExampleConsumer
+from app.website.consumers import SocialNetworkConsumer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'social_network.settings')
 
@@ -14,7 +14,7 @@ application = ProtocolTypeRouter({
     # WebSocket handler
     "websocket": AuthMiddlewareStack(
         URLRouter([
-            re_path(r"^ws/social-network/$", ExampleConsumer.as_asgi()),
+            re_path(r"^ws/social-network/$", SocialNetworkConsumer.as_asgi()),
         ])
     ),
 })

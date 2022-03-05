@@ -3,6 +3,7 @@ django===4.0
 # Django Server
 daphne===3.0.2
 asgiref===3.4.1
+Twisted[tls,http2]
 # Manipulate images
 Pillow===8.2.0
 # Kit utilities
