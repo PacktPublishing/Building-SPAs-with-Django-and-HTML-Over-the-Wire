@@ -1,0 +1,24 @@
+<form class="update-form" data-id="{{ message.id }}">
+    <input
+            type="text"
+            placeholder="Name"
+            id="message-form__author--update"
+            class="message-form__author"
+            name="author"
+            required
+            value="{{ message.author }}"
+    >
+    <textarea
+            name="message"
+            placeholder="Write your message here..."
+            id="message-form__text--update"
+            class="message-form__text"
+            required
+    >{{ message.text }}</textarea>
+    <input
+            type="submit"
+            class="message-form__submit"
+            id="message-form__submit--update"
+            value="Update"
+    >
+</form>

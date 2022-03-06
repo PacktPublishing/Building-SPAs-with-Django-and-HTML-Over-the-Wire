@@ -25,6 +25,54 @@ function sendData(message, webSocket) {
 }
 
 /**
+ * Displays the update form
+ * @param {Event} event
+ * @return {void}
+ */
+function displayUpdateForm(event) {
+    const message = {
+        "action": "open edit page",
+        "data": {
+            "id": event.target.dataset.id
+        }
+    };
+    sendData(message, myWebSocket);
+}
+
+/**
+ * Update message
+ * @param {Event} event
+ * @return {void}
+ */
+function updateMessage(event) {
+    event.preventDefault();
+    const message = {
+        "action": "update message",
+        "data": {
+            "id": event.target.dataset.id,
+            "author": event.target.querySelector("#message-form__author--update").value,
+            "text": event.target.querySelector("#message-form__text--update").value
+        }
+    };
+    sendData(message, myWebSocket);
+}
+
+/**
+ * Delete message
+ * @param {Event} event
+ * @return {void}
+ */
+function deleteMessage(event) {
+    const message = {
+        "action": "delete message",
+        "data": {
+            "id": event.target.dataset.id
+        }
+    };
+    sendData(message, myWebSocket);
+}
+
+/**
  * Send new message
  * @param {Event} event
  * @return {void}
@@ -103,6 +151,18 @@ myWebSocket.addEventListener("message", (event) => {
     const data = JSON.parse(event.data);
     // Renders the HTML received from the Consumer
     document.querySelector(data.selector).innerHTML = data.html;
+    // Add to all delete buttons the event
+    document.querySelectorAll(".messages__delete").forEach(button => {
+        button.addEventListener("click", deleteMessage);
+    });
+    // Add to all update buttons the event
+    document.querySelectorAll(".messages__update").forEach(button => {
+        button.addEventListener("click", displayUpdateForm);
+    });
+    // Add to the update form the event
+    document.querySelectorAll(".update-form").forEach(form => {
+        form.addEventListener("submit", updateMessage);
+    });
 });
 
 // Sends new message when you click on Submit
