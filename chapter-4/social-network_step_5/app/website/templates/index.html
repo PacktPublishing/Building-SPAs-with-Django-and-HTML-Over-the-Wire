@@ -1,0 +1,58 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Social Network</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script defer src="{% static 'js/index.js' %}"></script>
+</head>
+<body
+        data-host="{{ request.get_host }}"
+        data-scheme="{{ request.scheme }}"
+>
+    <div class="container">
+        <header>
+            <h1>Social Network</h1>
+        </header>
+        <main id="main">
+            <!-- Form for adding new messages -->
+            <section class="message-form">
+                <form>
+                    <input
+                            type="text"
+                            placeholder="Name"
+                            id="message-form__author"
+                            class="message-form__author"
+                            name="author"
+                            required
+                    >
+                    <textarea
+                            name="message"
+                            placeholder="Write your message here..."
+                            id="message-form__text"
+                            class="message-form__text"
+                            required
+                    ></textarea>
+                    <input
+                            type="submit"
+                            class="message-form__submit"
+                            id="message-form__submit"
+                            value="Send"
+                    >
+                </form>
+            </section>
+            <!-- End Form for adding new messages -->
+            <!-- Messages -->
+            <section id="messages">
+                <div id="messages__list"></div>
+                <button class="button" id="messages__previous-page" disabled>Previous</button>
+                <button class="button" id="messages__next-page">Next</button>
+            </section>
+            <!-- End Messages -->
+        </main>
+    </div>
+</body>
+</html>

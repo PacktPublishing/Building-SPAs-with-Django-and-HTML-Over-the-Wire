@@ -7,7 +7,6 @@ from asgiref.sync import async_to_sync
 class SocialNetworkConsumer(JsonWebsocketConsumer):
 
     room_name = 'broadcast'
-    max_messages_per_page = 5
 
     def connect(self):
         """Event when client connects"""
@@ -16,7 +15,6 @@ class SocialNetworkConsumer(JsonWebsocketConsumer):
         # Assign the Broadcast group
         async_to_sync(self.channel_layer.group_add)(self.room_name, self.channel_name)
         # Send you all the messages stored in the database.
-        self.send_list_messages()
 
     def disconnect(self, close_code):
         """Event when client disconnects"""
@@ -41,60 +39,3 @@ class SocialNetworkConsumer(JsonWebsocketConsumer):
                     author=data['author'],
                     text=data['text'],
                 )
-                # Send messages to all clients
-                self.send_list_messages()
-            case 'list messages':
-                # Send messages to all clients
-                self.send_list_messages(data['page'])
-            case 'delete message':
-                # Delete message from database
-                Message.objects.get(id=data['id']).delete()
-                # Send messages to all clients
-                self.send_list_messages()
-            case 'open edit page':
-                self.open_edit_page(data['id'])
-            case 'update message':
-                # Update message in database
-                Message.objects.filter(id=data['id']).update(
-                    author=data['author'],
-                    text=data['text'],
-                )
-                # Send messages to all clients
-                self.send_list_messages()
-
-
-    def send_html(self, event):
-        """Event: Send html to client"""
-        data = {
-            'selector': event['selector'],
-            'html': event['html'],
-        }
-        self.send_json(data)
-
-
-    def send_list_messages(self, page=1):
-        """Send list of messages to client"""
-        # Filter messages to the current page
-        start_pager = self.max_messages_per_page * (page - 1)
-        end_pager = start_pager + self.max_messages_per_page
-        messages = Message.objects.order_by('-created_at')[start_pager:end_pager]
-        # Render HTML and send to client
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_name, {
-                'type': 'send.html', # Run 'send_html()' method
-                'selector': '#messages__list',
-                'html': render_to_string('components/_list-messages.html', { 'messages': messages})
-            }
-        )
-
-
-    def open_edit_page(self, id):
-        """Send the form to edit the message"""
-        message = Message.objects.get(id=id)
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_name, {
-                'type': 'send.html', # Run 'send_html()' method
-                'selector': f'#message--{id}',
-                'html': render_to_string('components/_edit-message.html', {'message': message})
-            }
-        )
