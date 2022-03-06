@@ -7,6 +7,7 @@ from asgiref.sync import async_to_sync
 class SocialNetworkConsumer(JsonWebsocketConsumer):
 
     room_name = 'broadcast'
+    max_messages_per_page = 5
 
     def connect(self):
         self.accept()
@@ -29,13 +30,21 @@ class SocialNetworkConsumer(JsonWebsocketConsumer):
                 )
                 # Send messages to all clients
                 self.send_list_messages()
+            case 'list messages':
+                # Send messages to all clients
+                self.send_list_messages(data['page'])
 
-    def send_list_messages(self):
+    def send_list_messages(self, page=1):
+        start_pager = self.max_messages_per_page * (page - 1)
+        end_pager = start_pager + self.max_messages_per_page
         async_to_sync(self.channel_layer.group_send)(
             self.room_name, {
                 'type': 'send.html',
-                'selector': '#list-messages',
-                'html': render_to_string('components/_list-messages.html', {'messages': Message.objects.all()})
+                'selector': '#messages__list',
+                'html': render_to_string('components/_list-messages.html',
+                                         {
+                                             'messages': Message.objects.order_by('-created_at')[start_pager:end_pager],
+                                         })
             }
         )
 

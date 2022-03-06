@@ -2,13 +2,13 @@
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.template.loader import render_to_string
 
-class ExampleConsumer(JsonWebsocketConsumer):
 
+class ExampleConsumer(JsonWebsocketConsumer):
     def connect(self):
         self.accept()
         message = {
-            'action': 'connected',
-            'html': render_to_string('components/_welcome.html', {})
+            "action": "connected",
+            "html": render_to_string("components/_welcome.html", {}),
         }
         self.send_json(content=message)
 
