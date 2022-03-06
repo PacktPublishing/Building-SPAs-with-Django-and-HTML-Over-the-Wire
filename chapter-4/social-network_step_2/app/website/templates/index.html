@@ -14,8 +14,39 @@
         data-scheme="{{ request.scheme }}"
 >
     <div class="container">
-        <h1>Social Network</h1>
-        <main id="main"></main>
+        <header>
+            <h1>Social Network</h1>
+        </header>
+        <main id="main">
+            <!-- Form for adding new messages -->
+            <section class="message-form">
+                <form>
+                    <input
+                            type="text"
+                            placeholder="Name"
+                            id="message-form__author"
+                            class="message-form__author"
+                            name="author"
+                            required
+                    >
+                    <textarea
+                            name="message"
+                            placeholder="Write your message here..."
+                            id="message-form__text"
+                            class="message-form__text"
+                            required
+                    ></textarea>
+                    <input
+                            type="submit"
+                            class="message-form__submit"
+                            id="message-form__submit"
+                            value="Send"
+                    >
+                </form>
+            </section>
+            <!-- End Form for adding new messages -->
+            <section id="list-messages"></section>
+        </main>
     </div>
 </body>
 </html>

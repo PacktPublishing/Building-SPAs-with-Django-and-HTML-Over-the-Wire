@@ -1,0 +1,13 @@
+{% for message in messages %}
+    <article class="message">
+        <h2 class="message__author">{{ message.author }}</h2>
+        <p class="message__text">{{ message.text }}</p>
+        <footer class="message__footer">
+            <time class="message__created_at">{{ message.created_at }}</time>
+            <div class="message__controls">
+                <button class="button">Edit</button>
+                <button class="button">Delete</button>
+            </div>
+        </footer>
+    </article>
+{% endfor %}

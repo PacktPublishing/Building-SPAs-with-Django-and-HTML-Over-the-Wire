@@ -1,4 +1,4 @@
-// Connect to WebSockets server (EchoConsumer)
+// Connect to WebSockets server (SocialNetworkConsumer)
 const myWebSocket = new WebSocket(`${document.body.dataset.scheme === 'http' ? 'ws' : 'wss'}://${ document.body.dataset.host }/ws/social-network/`);
 
 // Event when a new message is received by WebSockets
