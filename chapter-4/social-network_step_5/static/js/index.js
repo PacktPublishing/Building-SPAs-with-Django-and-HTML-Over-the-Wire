@@ -6,9 +6,6 @@ const myWebSocket = new WebSocket(`${document.body.dataset.scheme === 'http' ? '
 const inputAuthor = document.querySelector("#message-form__author");
 const inputText = document.querySelector("#message-form__text");
 const inputSubmit = document.querySelector("#message-form__submit");
-const nextPageButton = document.querySelector("#messages__next-page");
-const previousPageButton = document.querySelector("#messages__previous-page");
-let currentPage = 1;
 
 /*
     FUNCTIONS
@@ -60,23 +57,27 @@ function sendNewMessage(event) {
     inputText.value = "";
 }
 
+
+/**
+ * Get current page stored in #paginator as dataset
+ * @returns {number}
+ */
+function getCurrentPage() {
+    return parseInt(document.querySelector("#paginator").dataset.page);
+}
+
+
 /**
  * Switch to the next page
  * @param {Event} event
  * @return {void}
  */
 function goToNextPage(event) {
-    // Increment current page
-    currentPage += 1;
-    // Activate the back button if we are not on the first page
-    if (currentPage !== 1) {
-        previousPageButton.removeAttribute("disabled");
-    }
     // Prepare the information we will send
     const newData = {
         "action": "list messages",
         "data": {
-            "page": currentPage,
+            "page": getCurrentPage() + 1,
         }
     };
     // Send the data to the server
@@ -89,23 +90,15 @@ function goToNextPage(event) {
  * @return {void}
  */
 function goToPreviousPage(event) {
-    if (currentPage > 1) {
-        // Page back
-        currentPage -= 1;
-        // Deactivate the button if we are on the first page
-        if (currentPage === 1) {
-            previousPageButton.setAttribute("disabled", true);
+    // Prepare the information we will send
+    const newData = {
+        "action": "list messages",
+        "data": {
+            "page": getCurrentPage() - 1,
         }
-        // Prepare the information we will send
-        const newData = {
-            "action": "list messages",
-            "data": {
-                "page": currentPage,
-            }
-        };
-        // Send the data to the server
-        sendData(newData, myWebSocket);
-    }
+    };
+    // Send the data to the server
+    sendData(newData, myWebSocket);
 }
 
 /*
@@ -118,6 +111,10 @@ myWebSocket.addEventListener("message", (event) => {
     const data = JSON.parse(event.data);
     // Renders the HTML received from the Consumer
     document.querySelector(data.selector).innerHTML = data.html;
+    /* Reassigns the events of the newly rendered HTML */
+    // Pagination
+    document.querySelector("#messages__next-page")?.addEventListener("click", goToNextPage);
+    document.querySelector("#messages__previous-page")?.addEventListener("click", goToPreviousPage);
     // Add to all delete buttons the event
     document.querySelectorAll(".messages__delete").forEach(button => {
         button.addEventListener("click", deleteMessage);
@@ -126,10 +123,6 @@ myWebSocket.addEventListener("message", (event) => {
 
 // Sends new message when you click on Submit
 inputSubmit.addEventListener("click", sendNewMessage);
-
-// Pagination
-nextPageButton.addEventListener("click", goToNextPage);
-previousPageButton.addEventListener("click", goToPreviousPage);
 
 /*
     INITIALIZATION

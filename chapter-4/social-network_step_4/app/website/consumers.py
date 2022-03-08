@@ -68,6 +68,10 @@ class SocialNetworkConsumer(JsonWebsocketConsumer):
             self.room_name, {
                 'type': 'send.html', # Run 'send_html()' method
                 'selector': '#messages__list',
-                'html': render_to_string('components/_list-messages.html', { 'messages': messages})
+                'html': render_to_string('components/_list-messages.html', {
+                    'messages': messages,
+                    'page': page,
+                    'total_pages': total_pages,
+                })
             }
         )
