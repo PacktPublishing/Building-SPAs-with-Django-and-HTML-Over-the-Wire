@@ -3,6 +3,8 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from django.template.loader import render_to_string
 from .models import Message
 from asgiref.sync import async_to_sync
+import math
+
 
 class SocialNetworkConsumer(JsonWebsocketConsumer):
 
@@ -62,14 +64,16 @@ class SocialNetworkConsumer(JsonWebsocketConsumer):
         # Filter messages to the current page
         start_pager = self.max_messages_per_page * (page - 1)
         end_pager = start_pager + self.max_messages_per_page
-        messages = Message.objects.order_by('-created_at')[start_pager:end_pager]
+        messages = Message.objects.order_by('-created_at')
+        messages_page = messages[start_pager:end_pager]
         # Render HTML and send to client
+        total_pages = math.ceil(messages.count() / self.max_messages_per_page)        
         async_to_sync(self.channel_layer.group_send)(
             self.room_name, {
                 'type': 'send.html', # Run 'send_html()' method
                 'selector': '#messages__list',
                 'html': render_to_string('components/_list-messages.html', {
-                    'messages': messages,
+                    'messages': messages_page,
                     'page': page,
                     'total_pages': total_pages,
                 })

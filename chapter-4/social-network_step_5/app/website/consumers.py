@@ -78,7 +78,7 @@ class SocialNetworkConsumer(JsonWebsocketConsumer):
                 'type': 'send.html', # Run 'send_html()' method
                 'selector': '#messages__list',
                 'html': render_to_string('components/_list-messages.html', {
-                    'messages': messages,
+                    'messages': messages_page,
                     'page': page,
                     'total_pages': total_pages,
                 }) 

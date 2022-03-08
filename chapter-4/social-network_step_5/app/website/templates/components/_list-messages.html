@@ -11,16 +11,18 @@
         </footer>
     </article>
 {% endfor %}
-<!-- Paginator -->
-<div id="paginator" data-page="{{ page }}">
-    {# The back button on the first page is not displayed #}
-    {% if page != 1 %}
-    <button class="button" id="messages__previous-page">Previous</button>
-    {% endif %}
+{% if total_pages != 0 %}
+    <!-- Paginator -->
+    <div id="paginator" data-page="{{ page }}">
+        {# The back button on the first page is not displayed #}
+        {% if page != 1 %}
+        <button class="button" id="messages__previous-page">Previous</button>
+        {% endif %}
 
-    {# The forward button on the last page is not displayed #}
-    {% if page != total_pages %}
-    <button class="button" id="messages__next-page">Next</button>
-    {% endif %}
-</div>
-<!-- End Paginator -->
+        {# The forward button on the last page is not displayed #}
+        {% if page != total_pages %}
+        <button class="button" id="messages__next-page">Next</button>
+        {% endif %}
+    </div>
+    <!-- End Paginator -->
+{% endif %}
