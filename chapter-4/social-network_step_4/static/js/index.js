@@ -103,9 +103,3 @@ myWebSocket.addEventListener("message", (event) => {
 
 // Sends new message when you click on Submit
 inputSubmit.addEventListener("click", sendNewMessage);
-
-
-
-/*
-    INITIALIZATION
-*/
