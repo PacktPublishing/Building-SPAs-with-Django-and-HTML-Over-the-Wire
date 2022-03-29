@@ -1,0 +1,33 @@
+:root {
+    --color__background: #f6f4f3;
+    --color__gray: #ccc;
+}
+
+* {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: var(--color__background);
+}
+
+.container {
+    margin: 0 auto;
+    padding: 1rem;
+    max-width: 40rem;
+}
+
+.button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--color__gray);
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.button:hover {
+    filter: brightness(90%);
+}

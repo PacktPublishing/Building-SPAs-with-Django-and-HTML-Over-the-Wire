@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+
+  django:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    entrypoint: bash ./django-launcher.sh
+    volumes:
+      - .:/usr/src/app/
+    environment:
+      DEBUG: "True"
+      ALLOWED_HOSTS: chat.localhost
+      SECRET_KEY: mysecret
+      DB_ENGINE: django.db.backends.postgresql
+      DB_NAME: hello_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: postgresql
+      DB_PORT: 5432
+      DOMAIN: chat.localhost
+      DOMAIN_URL: http://chat.localhost
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      STATIC_URL: /static/
+      STATIC_ROOT: static
+      MEDIA_URL: /media/
+      DEFAULT_FROM_EMAIL: no-reply@chat.localhost
+      EMAIL_HOST: mailhog
+      EMAIL_USE_TLS: "False"
+      EMAIL_USE_SSL: "False"
+      EMAIL_PORT: 1025
+      EMAIL_USER:
+      EMAIL_PASSWORD:
+    expose:
+      - 8000
+    depends_on:
+      - postgresql
+      - redis
+
+  postgresql:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hello_db
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+    expose:
+      - 5432
+
+  redis:
+    image: redis:alpine
+    expose:
+      - 6379
+
+  caddy:
+    image: caddy:alpine
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - .:/usr/src/app/
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy_data:/data
+    depends_on:
+      - django
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    expose:
+      - 1025
+      - 8025
