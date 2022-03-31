@@ -15,20 +15,10 @@
 >
     <div class="container">
         <h1>Chat</h1>
-        <aside>
-            <nav>
-                <ul>
-                    {# All users #}
-                    <li><a href="#" class="active">#announcements</a></li>
-                    {# Groups #}
-                    <li><a href="#">#python</a></li>
-                    <li><a href="#">#events</a></li>
-                    <li><a href="#">#off-topic</a></li>
-                    {# Single users #}
-                </ul>
-            </nav>
-        </aside>
-        <main id="main"></main>
+        <aside id="aside"></aside>
+        <main id="main">
+            {% include "components/_login.html" with users=users %}
+        </main>
     </div>
 </body>
 </html>

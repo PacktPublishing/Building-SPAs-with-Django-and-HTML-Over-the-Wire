@@ -1,0 +1,12 @@
+<nav>
+    <ul>
+        {# Groups #}
+        <li><a href="#">#python</a></li>
+        <li><a href="#">#events</a></li>
+        <li><a href="#">#off-topic</a></li>
+        {# Single users #}
+        {% for user in users %}
+            <li><a href="#">{{ user.username }}</a></li>
+        {% endfor %}
+    </ul>
+</nav>

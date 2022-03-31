@@ -55,6 +55,6 @@ class ExampleConsumer(JsonWebsocketConsumer):
             self.room_name, {
                 'type': 'send.html', # Run 'send_html()' method
                 'selector': '#main',
-                'html': render_to_string("components/_welcome.html", {})
+                'html': render_to_string("components/_login.html", {})
             }
         )
