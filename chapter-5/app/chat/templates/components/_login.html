@@ -1,1 +1,9 @@
-<h2>Welcome</h2>
+<h2>Select your user</h2>
+<form>
+    <select name="user">
+    {% for user in users %}
+        <option value="{{ user.id }}">{{ user.username }}</option>
+    {% endfor %}
+    </select>
+    <input type="submit" value="Enter">
+</form>

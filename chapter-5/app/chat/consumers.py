@@ -2,26 +2,41 @@
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.template.loader import render_to_string
 from asgiref.sync import async_to_sync
+from channels.auth import login, logout
+from django.contrib.auth.models import User
+from .models import Client, Room
 
 
 class ExampleConsumer(JsonWebsocketConsumer):
 
-    room_name = 'broadcast'
+    # At startup delete all clients
+    Client.objects.all().delete()
 
     def connect(self):
         """Event when client connects"""
         # Accept the connection
         self.accept()
-        # Assign the Broadcast group
-        async_to_sync(self.channel_layer.group_add)(self.room_name, self.channel_name)
-        # Send data
-        self.send_hello()
+        # Gets a random user not logged in
+        user = User.objects.exclude(
+            id__in=Client.objects.all().values('user')
+        ).order_by('?').first()
+        # Login
+        login(self.scope, user)
+        # Saves the new client
+        client = Client.objects.create(user=user, channel_name=self.channel_name)
+        # Assign the group #hi, the first group that will be displayed when you enter
+        self.add_client_to_group(client, '#hi')
 
 
     def disconnect(self, close_code):
         """Event when client disconnects"""
-        # Remove from the Broadcast group
-        async_to_sync(self.channel_layer.group_discard)(self.room_name, self.channel_name)
+        # Logout user
+        logout(self.scope, self.user)
+        # Remove the client from the current group
+        self.remove_client_from_current_group(Client.objects.get(user=self.user))
+        # Delete the client
+        Client.objects.filter(user=self.user).delete()
+
 
     def receive_json(self, data_received):
         """
@@ -35,7 +50,9 @@ class ExampleConsumer(JsonWebsocketConsumer):
         data = data_received['data']
         # Depending on the action we will do one task or another.
         match data_received['action']:
-            case 'example action':
+            case 'Change group':
+                pass
+            case 'New message':
                 pass
 
 
@@ -58,3 +75,23 @@ class ExampleConsumer(JsonWebsocketConsumer):
                 'html': render_to_string("components/_login.html", {})
             }
         )
+
+    def add_client_to_group(self, client, group_name, is_group=False):
+        """Add customer to a group within Channels and save the reference in the Room model."""
+        self.remove_client_from_current_group(client)
+        room = Room.objects.get_or_create(name=group_name, is_group=is_group)
+        room.client_set.add(client)
+        async_to_sync(self.channel_layer.group_add)(room.name, self.channel_name)
+
+
+    def remove_client_from_current_group(self, client):
+        """Remove client from current group"""
+        # Get the current group
+        room = Room.objects.get(client_set=client)
+        # Remove the client from the group
+        async_to_sync(self.channel_layer.group_discard)(room.name, self.channel_name)
+        # Delete the client
+        room.client_set.remove(client)
+        # If the group is empty, delete it
+        if not room.client_set.all():
+            room.delete()

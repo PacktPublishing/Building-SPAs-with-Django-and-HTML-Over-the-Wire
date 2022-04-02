@@ -1,5 +1,5 @@
 {% for message in messages %}
-    <article{% if user.id == message.author.id %} class="message message--own"{% endif %}>
+    <article class="message__item{% if user.id == message.author.id %} message--own"{% endif %}>
         <header>
             <h3>{{ message.user.username }}</h3>
             <time>{{ message.created_at|date:"d/m/Y H:i" }}</time>
