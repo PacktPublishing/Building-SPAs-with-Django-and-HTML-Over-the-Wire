@@ -9,7 +9,7 @@ from django.core.asgi import get_asgi_application
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.urls import re_path
-from app.chat.consumers import ExampleConsumer
+from app.chat.consumers import ChatConsumer
 
 
 application = ProtocolTypeRouter(
@@ -20,7 +20,7 @@ application = ProtocolTypeRouter(
         "websocket": AuthMiddlewareStack(
             URLRouter(
                 [
-                    re_path(r"^ws/example/$", ExampleConsumer.as_asgi()),
+                    re_path(r"^ws/example/$", ChatConsumer.as_asgi()),
                 ]
             )
         ),
