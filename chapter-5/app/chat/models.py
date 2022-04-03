@@ -19,7 +19,8 @@ class Room(models.Model):
     """
     Rooms for users
     """
-    client = models.ManyToManyField(Client)
+    clients_subscribed = models.ManyToManyField(Client, related_name='clients_subscribed')
+    clients_active = models.ManyToManyField(Client, related_name='clients_active')
     name = models.CharField(max_length=255, blank=True, null=True, default=None)
     is_group = models.BooleanField(default=False)
 

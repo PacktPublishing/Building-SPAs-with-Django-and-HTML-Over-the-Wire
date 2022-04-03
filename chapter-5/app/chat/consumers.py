@@ -42,6 +42,8 @@ class ChatConsumer(JsonWebsocketConsumer):
         """Event when client disconnects"""
         # Remove the client from the current group
         self.remove_client_from_current_group()
+        # Remove the client from the database
+        Client.objects.get(channel=self.channel_name).delete()
         # Logout user
         logout(self.scope, self.scope["user"])
 
@@ -65,9 +67,9 @@ class ChatConsumer(JsonWebsocketConsumer):
                     # Add to a private group of 2 users
                     # There is a private group with the target user and the current user. The current user is added to the channel.
                     room = Room.objects.filter(
-                        client__user__in=[
-                            self.scope["user"],
-                            User.objects.get(username=data["groupName"]),
+                        clients_subscribed__in=[
+                            Client.objects.get(user=self.scope["user"]),
+                            Client.objects.get(user__username=data["groupName"])
                         ],
                         is_group=False,
                     ).first()
@@ -76,8 +78,8 @@ class ChatConsumer(JsonWebsocketConsumer):
                     else:
                         # There is a private room with the target user and it is alone. The current user is added to the room and channel.
                         room = Room.objects.filter(
-                            client__user__in=[
-                                User.objects.get(username=data["groupName"]),
+                            clients_subscribed__in=[
+                                Client.objects.get(user__username=data["groupName"]),
                             ],
                             is_group=False,
                         ).first()
@@ -104,7 +106,7 @@ class ChatConsumer(JsonWebsocketConsumer):
 
     def list_group_messages(self):
         """List all messages from a group"""
-        room_name = self.get_name_group()
+        room_name = self.get_name_room_active()
         # Get the room
         room = Room.objects.get(name=room_name)
         # Get all messages from the room
@@ -120,7 +122,7 @@ class ChatConsumer(JsonWebsocketConsumer):
 
     def send_group_name(self):
         """Send the group name to the client"""
-        room_name = self.get_name_group()
+        room_name = self.get_name_room_active()
         room = Room.objects.get(name=room_name)
         data = {
             "selector": "#group-name",
@@ -132,7 +134,7 @@ class ChatConsumer(JsonWebsocketConsumer):
     def save_message(self, text):
         """Save a message in the database"""
         # Get the room
-        room = Room.objects.get(name=self.get_name_group())
+        room = Room.objects.get(name=self.get_name_room_active())
         # Save message
         Message.objects.create(
             user=self.scope["user"],
@@ -155,7 +157,8 @@ class ChatConsumer(JsonWebsocketConsumer):
         if not room.name:
             room.name = f"private_{room.id}"
             room.save()
-        room.client.add(client)
+        room.clients_active.add(client)
+        room.clients_subscribed.add(client)
         room.save()
         # Add client to group
         async_to_sync(self.channel_layer.group_add)(room.name, self.channel_name)
@@ -163,19 +166,19 @@ class ChatConsumer(JsonWebsocketConsumer):
         self.send_group_name()
 
 
-    def get_name_group(self):
+    def get_name_room_active(self):
         """Get the name of the group from login user"""
-        room = Room.objects.filter(client__user_id=self.scope["user"].id).first()
+        room = Room.objects.filter(clients_active__user_id=self.scope["user"].id).first()
         return room.name
 
     def remove_client_from_current_group(self):
         """Remove client from current group"""
         client = Client.objects.get(user_id=self.scope["user"].id)
         # Get the current group
-        room = Room.objects.filter(client__in=[client]).first()
+        room = Room.objects.filter(clients_active__in=[client]).first()
         if room and room.is_group:
             # Remove the client from the group
             async_to_sync(self.channel_layer.group_discard)(room.name, self.channel_name)
             # Remove the client from the Room model
-            room.client.remove(client)
+            room.clients_active.remove(client)
             room.save()
