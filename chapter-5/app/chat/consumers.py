@@ -5,7 +5,6 @@ from asgiref.sync import async_to_sync
 from channels.auth import login, logout
 from django.contrib.auth.models import User
 from .models import Client, Room, Message
-from django.db.models import Q
 
 
 class ChatConsumer(JsonWebsocketConsumer):
@@ -66,19 +65,27 @@ class ChatConsumer(JsonWebsocketConsumer):
                     # Add to a private group of 2 users
                     # There is a private group with the target user and the current user. The current user is added to the channel.
                     room = Room.objects.filter(
-                        Q(client__user__in=[
-                            self.scope["user"]
-                        ]) | Q(client__user__in=[
-                            User.objects.get(username=data["groupName"])
-                        ]),
+                        client__user__in=[
+                            self.scope["user"],
+                            User.objects.get(username=data["groupName"]),
+                        ],
                         is_group=False,
                     ).first()
                     if room:
                         self.add_client_to_group(room.name)
-                        # There is a private room with the target user and it is alone. The current user is added to the room and channel.
                     else:
-                        # There is no group where the target user is alone. The group is created and the recipient and current user are added to the room and channel.
-                        self.add_client_to_group()
+                        # There is a private room with the target user and it is alone. The current user is added to the room and channel.
+                        room = Room.objects.filter(
+                            client__user__in=[
+                                User.objects.get(username=data["groupName"]),
+                            ],
+                            is_group=False,
+                        ).first()
+                        if room and room.client.count() == 1:
+                            self.add_client_to_group(room.name, room.name)
+                        else:
+                            # There is no group where the target user is alone. The group is created and the recipient and current user are added to the room and channel.
+                            self.add_client_to_group()
                 self.send_group_name()
                 self.list_group_messages()
             case "New message":
@@ -101,7 +108,7 @@ class ChatConsumer(JsonWebsocketConsumer):
         # Get the room
         room = Room.objects.get(name=room_name)
         # Get all messages from the room
-        messages = Message.objects.filter(room=room)
+        messages = Message.objects.filter(room=room).order_by("created_at")
         # Render HTML and send to client
         async_to_sync(self.channel_layer.group_send)(
             room_name, {
