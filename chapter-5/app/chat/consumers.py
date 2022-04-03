@@ -33,7 +33,7 @@ class ChatConsumer(JsonWebsocketConsumer):
         # Saves the new client
         Client.objects.create(user=user, channel=self.channel_name)
         # Assign the group "hi", the first group that will be displayed when you enter
-        self.add_client_to_group("hi")
+        self.add_client_to_group("hi", True)
         # List the messages
         self.list_group_messages()
 
@@ -100,6 +100,16 @@ class ChatConsumer(JsonWebsocketConsumer):
             }
         )
 
+    def send_group_name(self):
+        """Send the group name to the client"""
+        room_name = self.get_name_group()
+        room = Room.objects.get(name=room_name)
+        data = {
+            "selector": "#group-name",
+            "html": ("#" if room.is_group else "") + room_name,
+        }
+        self.send_json(data)
+
 
     def save_message(self, text):
         """Save a message in the database"""
@@ -113,10 +123,10 @@ class ChatConsumer(JsonWebsocketConsumer):
         )
 
 
-    def add_client_to_group(self, group_name, user=None, is_group=False):
+    def add_client_to_group(self, group_name, is_group=False):
         """Add customer to a group within Channels and save the reference in the Room model."""
         # Get the user client
-        client = Client.objects.get(user_id=user.id if user else self.scope["user"].id)
+        client = Client.objects.get(user_id=self.scope["user"].id)
         self.remove_client_from_current_group(client)
         Room.objects.get_or_create(name=group_name, is_group=is_group)
         # Get o create room
@@ -125,6 +135,8 @@ class ChatConsumer(JsonWebsocketConsumer):
         room.save()
         # Add client to group
         async_to_sync(self.channel_layer.group_add)(room.name, self.channel_name)
+        # Send the group name to the client
+        self.send_group_name()
 
 
     def get_name_group(self):

@@ -80,7 +80,7 @@ body {
 .messages {
     display: grid;
     height: 30rem;
-    grid-template-rows: 1rem auto 2rem;
+    grid-template-rows: 4rem auto 2rem;
 }
 
 .massage__header {
