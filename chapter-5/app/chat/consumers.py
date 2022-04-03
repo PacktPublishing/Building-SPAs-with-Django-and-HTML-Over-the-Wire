@@ -66,28 +66,31 @@ class ChatConsumer(JsonWebsocketConsumer):
                 else:
                     # Add to a private group of 2 users
                     # There is a private group with the target user and the current user. The current user is added to the channel.
+                    client_target = Client.objects.filter(user__username=data["groupName"]).first()
                     room = Room.objects.filter(
                         clients_subscribed__in=[
                             Client.objects.get(user=self.scope["user"]),
-                            Client.objects.get(user__username=data["groupName"])
+                            client_target
                         ],
                         is_group=False,
                     ).first()
-                    if room:
+                    if room and client_target and room.clients_subscribed.count() == 2:
                         self.add_client_to_group(room.name)
-                    else:
+                    elif client_target:
                         # There is a private room with the target user and it is alone. The current user is added to the room and channel.
                         room = Room.objects.filter(
                             clients_subscribed__in=[
-                                Client.objects.get(user__username=data["groupName"]),
+                                client_target,
                             ],
                             is_group=False,
                         ).first()
-                        if room and room.client.count() == 1:
+                        if room and room.clients_subscribed.count() == 1:
                             self.add_client_to_group(room.name)
                         else:
-                            # There is no group where the target user is alone. The group is created and the recipient and current user are added to the room and channel.
                             self.add_client_to_group()
+                    else:
+                        # There is no group where the target user is alone. The group is created and the recipient and current user are added to the room and channel.
+                        self.add_client_to_group()
                 self.send_group_name()
                 self.list_group_messages()
             case "New message":
@@ -146,12 +149,11 @@ class ChatConsumer(JsonWebsocketConsumer):
     def add_client_to_group(self, group_name=None, is_group=False):
         """Add customer to a group within Channels and save the reference in the Room model."""
         # Get the user client
-        client = Client.objects.get(user_id=self.scope["user"].id)
+        client = Client.objects.get(user=self.scope["user"])
         # Remove the client from the previous group
         self.remove_client_from_current_group()
         # Get or create room
-        Room.objects.get_or_create(name=group_name, is_group=is_group)
-        room = Room.objects.get(name=group_name)
+        room, created = Room.objects.get_or_create(name=group_name, is_group=is_group)
         # If it has no name, it is assigned "private_{id}"
         # For example, if the id is 1, it shall be private_1.
         if not room.name:
