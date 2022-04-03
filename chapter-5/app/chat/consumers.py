@@ -82,7 +82,7 @@ class ChatConsumer(JsonWebsocketConsumer):
                             is_group=False,
                         ).first()
                         if room and room.client.count() == 1:
-                            self.add_client_to_group(room.name, room.name)
+                            self.add_client_to_group(room.name)
                         else:
                             # There is no group where the target user is alone. The group is created and the recipient and current user are added to the room and channel.
                             self.add_client_to_group()
