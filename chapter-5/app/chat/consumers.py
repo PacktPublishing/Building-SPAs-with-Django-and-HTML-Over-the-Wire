@@ -23,10 +23,19 @@ class ChatConsumer(JsonWebsocketConsumer):
         # Login
         async_to_sync(login)(self.scope, user)
         self.scope["session"].save()
+        # Display the username
+        self.send_html(
+            {
+                "selector": "#logged-user",
+                "html": self.scope["user"].username,
+            }
+        )
         # Saves the new client
-        client = Client.objects.create(user=user, channel=self.channel_name)
+        Client.objects.create(user=user, channel=self.channel_name)
         # Assign the group "hi", the first group that will be displayed when you enter
         self.add_client_to_group("hi")
+        # List the messages
+        self.list_group_messages()
 
 
     def disconnect(self, close_code):
@@ -51,11 +60,19 @@ class ChatConsumer(JsonWebsocketConsumer):
         # Depending on the action we will do one task or another.
         match data_received["action"]:
             case "Change group":
-                self.add_client_to_group(data["group_name"], data["is_group"])
-                self.list_group_messages(data["group_name"])
+                if data["is_group"]:
+                    # Add to a multi-user group
+                    self.add_client_to_group(data["group_name"], data["is_group"])
+                    self.list_group_messages(data["group_name"])
+                else:
+                    # Add to a private group of 2 users
+                    # There is a private group with the target user and the current user. The current user is added to the channel.
+                    # There is a private room with the target user and it is alone. The current user is added to the room and channel.
+                    # There is no group where the target user is alone. The group is created and the recipient and current user are added to the room and channel.
+                    pass
             case "New message":
-                self.save_message(data["message"], data["group_name"])
-                self.list_group_messages(data["group_name"])
+                self.save_message(data["message"])
+                self.list_group_messages()
 
 
     def send_html(self, event):
@@ -67,28 +84,33 @@ class ChatConsumer(JsonWebsocketConsumer):
         self.send_json(data)
 
 
-    def list_group_messages(self, group_name):
+    def list_group_messages(self):
         """List all messages from a group"""
+        room_name = self.get_name_group()
         # Get the room
-        room = Room.objects.get(name=group_name)
+        room = Room.objects.get(name=room_name)
         # Get all messages from the room
         messages = Message.objects.filter(room=room)
         # Render HTML and send to client
         async_to_sync(self.channel_layer.group_send)(
-            self.room_name, {
+            room_name, {
                 "type": "send.html", # Run "send_html()" method
-                "selector": "#main",
-                "html": render_to_string("components/_list_messages.html.html", {"messages": messages})
+                "selector": "#messages-list",
+                "html": render_to_string("components/_list_messages.html", {"messages": messages})
             }
         )
 
 
-    def save_message(self, message, group_name):
+    def save_message(self, text):
         """Save a message in the database"""
         # Get the room
-        room = Room.objects.get(name=group_name)
+        room = Room.objects.get(name=self.get_name_group())
         # Save message
-        Message.objects.create(room=room, message=message)
+        Message.objects.create(
+            user=self.scope["user"],
+            room=room,
+            text=text,
+        )
 
 
     def add_client_to_group(self, group_name, user=None, is_group=False):
@@ -104,6 +126,11 @@ class ChatConsumer(JsonWebsocketConsumer):
         # Add client to group
         async_to_sync(self.channel_layer.group_add)(room.name, self.channel_name)
 
+
+    def get_name_group(self):
+        """Get the name of the group from login user"""
+        room = Room.objects.filter(client__user_id=self.scope["user"].id).first()
+        return room.name
 
     def remove_client_from_current_group(self, client):
         """Remove client from current group"""

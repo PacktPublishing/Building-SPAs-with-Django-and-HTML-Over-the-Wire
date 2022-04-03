@@ -13,11 +13,14 @@
         data-host="{{ request.get_host }}"
         data-scheme="{{ request.scheme }}"
 >
-    <div class="container">
-        <h1>Chat</h1>
-        <aside id="aside"></aside>
+    <h1 class="title">Chat</h1>
+    <h2 class="subtitle">I'm <span id="logged-user"></span></h2>
+    <div class="container chat">
+        <aside id="aside">
+            {% include "components/_aside.html" with users=users %}
+        </aside>
         <main id="main">
-            {% include "components/_login.html" with users=users %}
+            {% include "components/_chat.html" %}
         </main>
     </div>
 </body>

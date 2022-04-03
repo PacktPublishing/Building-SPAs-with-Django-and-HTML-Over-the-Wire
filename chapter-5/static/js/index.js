@@ -2,7 +2,7 @@
     VARIABLES
 */
 // Connect to WebSockets server (SocialNetworkConsumer)
-const myWebSocket = new WebSocket(`${document.body.dataset.scheme === 'http' ? 'ws' : 'wss'}://${ document.body.dataset.host }/ws/example/`);
+const myWebSocket = new WebSocket(`${document.body.dataset.scheme === 'http' ? 'ws' : 'wss'}://${ document.body.dataset.host }/ws/chat/`);
 
 /*
     FUNCTIONS
@@ -18,6 +18,22 @@ function sendData(message, webSocket) {
     webSocket.send(JSON.stringify(message));
 }
 
+/**
+ * Send message to WebSockets server
+ * @return {void}
+ */
+function sendNewMessage(event) {
+    event.preventDefault();
+    const messageText = document.querySelector('#message-text')
+    sendData({
+            action: 'New message',
+            data: {
+                message: messageText.value
+            }
+        }, myWebSocket);
+    messageText.value = '';
+}
+
 /*
     EVENTS
 */
@@ -28,6 +44,14 @@ myWebSocket.addEventListener("message", (event) => {
     const data = JSON.parse(event.data);
     // Renders the HTML received from the Consumer
     document.querySelector(data.selector).innerHTML = data.html;
+    /* Reassigns the events of the newly rendered HTML */
+    document.querySelector('#send').addEventListener('click', sendNewMessage);
+    // Scrolls to the bottom of the chat
+    const messagesList = document.querySelector('#messages-list');
+    messagesList.scrollTop = messagesList.scrollHeight;
+    // document.querySelectorAll(".messages__delete").forEach(button => {
+    //     button.addEventListener("click", deleteMessage);
+    // });
 });
 
 /*
