@@ -1,15 +1,61 @@
 <nav>
     <h2>Groups</h2>
     <ul class="nav__ul">
-        <li class="nav__li"><a class="nav__link" href="#">#hi</a></li>
-        <li class="nav__li"><a class="nav__link" href="#">#python</a></li>
-        <li class="nav__li"><a class="nav__link" href="#">#events</a></li>
-        <li class="nav__li"><a class="nav__link" href="#">#off-topic</a></li>
+        <li class="nav__li">
+            <a
+                    class="nav__link"
+                    href="#"
+                    data-group-name="hi"
+                    data-group-public="true"
+            >
+                #hi
+            </a>
+        </li>
+        <li class="nav__li">
+            <a
+                    class="nav__link"
+                    href="#"
+                    data-group-name="python"
+                    data-group-public="true"
+            >
+                #python
+            </a>
+        </li>
+                <li class="nav__li">
+            <a
+                    class="nav__link"
+                    href="#"
+                    data-group-name="events"
+                    data-group-public="true"
+            >
+                #events
+            </a>
+        </li>
+        </li>
+        <li class="nav__li">
+            <a
+                    class="nav__link"
+                    href="#"
+                    data-group-name="off-topic"
+                    data-group-public="true"
+            >
+                #off-topic
+            </a>
+        </li>
     </ul>
     <h2>Users</h2>
     <ul class="nav__ul">
         {% for user in users %}
-            <li class="nav__li"><a class="nav__link" href="#">{{ user.username }}</a></li>
+            <li class="nav__li">
+                <a
+                        class="nav__link"
+                        href="#"
+                        data-group-name="{{ user.username }}"
+                        data-is-group="false"
+                >
+                    {{ user.username }}
+                </a>
+            </li>
         {% endfor %}
     </ul>
 </nav>

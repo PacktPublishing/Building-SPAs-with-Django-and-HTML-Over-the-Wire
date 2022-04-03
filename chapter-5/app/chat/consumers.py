@@ -60,10 +60,11 @@ class ChatConsumer(JsonWebsocketConsumer):
         # Depending on the action we will do one task or another.
         match data_received["action"]:
             case "Change group":
-                if data["is_group"]:
+                if data["isGroup"]:
                     # Add to a multi-user group
-                    self.add_client_to_group(data["group_name"], data["is_group"])
-                    self.list_group_messages(data["group_name"])
+                    self.add_client_to_group(data["groupName"], data["isGroup"])
+                    self.send_group_name()
+                    self.list_group_messages()
                 else:
                     # Add to a private group of 2 users
                     # There is a private group with the target user and the current user. The current user is added to the channel.

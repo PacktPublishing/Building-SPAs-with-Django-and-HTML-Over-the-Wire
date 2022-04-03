@@ -34,6 +34,18 @@ function sendNewMessage(event) {
     messageText.value = '';
 }
 
+
+function changeGroup(event) {
+    event.preventDefault();
+    sendData({
+            action: 'Change group',
+            data: {
+                groupName: event.target.dataset.groupName,
+                isGroup: event.target.dataset.groupPublic === "true"
+            }
+        }, myWebSocket);
+}
+
 /*
     EVENTS
 */
@@ -49,9 +61,9 @@ myWebSocket.addEventListener("message", (event) => {
     // Scrolls to the bottom of the chat
     const messagesList = document.querySelector('#messages-list');
     messagesList.scrollTop = messagesList.scrollHeight;
-    // document.querySelectorAll(".messages__delete").forEach(button => {
-    //     button.addEventListener("click", deleteMessage);
-    // });
+    document.querySelectorAll(".nav__link").forEach(button => {
+        button.addEventListener("click", changeGroup);
+    });
 });
 
 /*
