@@ -5,6 +5,7 @@ from asgiref.sync import async_to_sync
 from channels.auth import login, logout
 from django.contrib.auth.models import User
 from .models import Client, Room, Message
+from django.db.models import Q
 
 
 class ChatConsumer(JsonWebsocketConsumer):
@@ -65,33 +66,37 @@ class ChatConsumer(JsonWebsocketConsumer):
                     self.add_client_to_group(data["groupName"], data["isGroup"])
                 else:
                     # Add to a private group of 2 users
-                    # There is a private group with the target user and the current user. The current user is added to the channel.
-                    client_target = Client.objects.filter(user__username=data["groupName"]).first()
-                    room = Room.objects.filter(
-                        clients_subscribed__in=[
-                            Client.objects.get(user=self.scope["user"]),
-                            client_target
-                        ],
-                        is_group=False,
-                    ).first()
-                    if room and client_target and room.clients_subscribed.count() == 2:
+                    # There is a private group with the target user and the current user. The current user is added to
+                    # the channel.
+                    user_target = User.objects.filter(username=data["groupName"]).first()
+                    room = Room.objects.filter(users_subscribed__in=[self.scope["user"]], is_group=False).intersection(Room.objects.filter(users_subscribed__in=[user_target], is_group=False)).first()
+                    if room and user_target and room.users_subscribed.count() == 2:
                         self.add_client_to_group(room.name)
-                    elif client_target:
-                        # There is a private room with the target user and it is alone. The current user is added to the room and channel.
+                        print("la sala existe")
+                    elif user_target:
+                        # There is a private room with the target user and it is alone. The current user is added to the
+                        # room and channel.
                         room = Room.objects.filter(
-                            clients_subscribed__in=[
-                                client_target,
+                            users_subscribed__in=[
+                                user_target,
                             ],
                             is_group=False,
-                        ).first()
-                        if room and room.clients_subscribed.count() == 1:
+                        ).last()
+                        if room and room.users_subscribed.count() == 1:
                             self.add_client_to_group(room.name)
+                            print("hay un hueco")
+
                         else:
                             self.add_client_to_group()
+                            print("solito 1")
+
                     else:
-                        # There is no group where the target user is alone. The group is created and the recipient and current user are added to the room and channel.
+                        # There is no group where the target user is alone. The group is created and the recipient and
+                        # current user are added to the room and channel.
                         self.add_client_to_group()
+                        print("solito 2")
                 self.send_group_name()
+
                 self.list_group_messages()
             case "New message":
                 self.save_message(data["message"])
@@ -160,7 +165,7 @@ class ChatConsumer(JsonWebsocketConsumer):
             room.name = f"private_{room.id}"
             room.save()
         room.clients_active.add(client)
-        room.clients_subscribed.add(client)
+        room.users_subscribed.add(client.user)
         room.save()
         # Add client to group
         async_to_sync(self.channel_layer.group_add)(room.name, self.channel_name)
@@ -175,10 +180,10 @@ class ChatConsumer(JsonWebsocketConsumer):
 
     def remove_client_from_current_group(self):
         """Remove client from current group"""
-        client = Client.objects.get(user_id=self.scope["user"].id)
+        client = Client.objects.get(user=self.scope["user"])
         # Get the current group
-        room = Room.objects.filter(clients_active__in=[client]).first()
-        if room and room.is_group:
+        rooms = Room.objects.filter(clients_active__in=[client])
+        for room in rooms:
             # Remove the client from the group
             async_to_sync(self.channel_layer.group_discard)(room.name, self.channel_name)
             # Remove the client from the Room model
