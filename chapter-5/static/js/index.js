@@ -34,7 +34,10 @@ function sendNewMessage(event) {
     messageText.value = '';
 }
 
-
+/**
+ * Requests the Consumer to change the group with respect to the Dataset group-name.
+ * @param event
+ */
 function changeGroup(event) {
     event.preventDefault();
     sendData({
@@ -56,16 +59,16 @@ myWebSocket.addEventListener("message", (event) => {
     const data = JSON.parse(event.data);
     // Renders the HTML received from the Consumer
     document.querySelector(data.selector).innerHTML = data.html;
-    /* Reassigns the events of the newly rendered HTML */
-    document.querySelector('#send').addEventListener('click', sendNewMessage);
     // Scrolls to the bottom of the chat
     const messagesList = document.querySelector('#messages-list');
     messagesList.scrollTop = messagesList.scrollHeight;
+    /**
+     *  Reassigns the events of the newly rendered HTML
+     */
+    // Button to send new message button
+    document.querySelector('#send').addEventListener('click', sendNewMessage);
+    // Buttons for changing groups
     document.querySelectorAll(".nav__link").forEach(button => {
         button.addEventListener("click", changeGroup);
     });
 });
-
-/*
-    INITIALIZATION
-*/

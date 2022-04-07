@@ -1,11 +1,23 @@
 {% for message in messages %}
-    <article class="message__item{% if user.id == message.author.id %} message--own"{% endif %}>
+
+    {# Item message #}
+    <article class="message__item">
         <header class="massage__header">
+
+            {# Username #}
             <h3 class="message__title">{{ message.user.username }}</h3>
+
+            {# Date of creation #}
             <time class="message__time">{{ message.created_at|date:"d/m/Y H:i" }}</time>
+
         </header>
         <div>
+
+            {# Text #}
             {{ message.text }}
+
         </div>
     </article>
+    {# End Item message #}
+
 {% endfor %}

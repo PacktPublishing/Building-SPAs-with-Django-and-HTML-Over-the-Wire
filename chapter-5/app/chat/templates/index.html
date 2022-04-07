@@ -3,10 +3,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>Chat</title>
+    {# CSS #}
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {# JavaScript #}
     <script defer src="{% static 'js/index.js' %}"></script>
 </head>
 <body
@@ -14,12 +15,15 @@
         data-scheme="{{ request.scheme }}"
 >
     <h1 class="title">Chat</h1>
+    {# Login user name #}
     <h2 class="subtitle">I'm <span id="logged-user"></span></h2>
     <div class="container chat">
         <aside id="aside">
+            {# List of groups and users #}
             {% include "components/_aside.html" with users=users %}
         </aside>
         <main id="main">
+            {# Chat: Group name, list of users and form to send new message #}
             {% include "components/_chat.html" %}
         </main>
     </div>

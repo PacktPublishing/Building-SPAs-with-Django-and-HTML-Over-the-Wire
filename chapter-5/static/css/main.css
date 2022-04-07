@@ -1,3 +1,4 @@
+/* Global styles */
 :root {
     --color__background: #f6f4f3;
     --color__gray: #ccc;
@@ -13,6 +14,8 @@ body {
     margin: 0;
     background-color: var(--color__background);
 }
+
+/* General classes for small components */
 
 .container {
     margin: 0 auto;
@@ -43,6 +46,8 @@ body {
     box-sizing: border-box;
 }
 
+/* Styles for chat */
+
 .title {
     text-align: center;
 }
@@ -58,6 +63,8 @@ body {
     grid-template-columns: 1fr 3fr;
     gap: 1rem;
 }
+
+/* Aside */
 
 .nav__ul {
     list-style: none;
@@ -76,6 +83,10 @@ body {
 .nav__link:hover {
     filter: brightness(90%);
 }
+
+/* End Aside */
+
+/* Chat */
 
 .messages {
     display: grid;
@@ -110,3 +121,5 @@ body {
     display: grid;
     grid-template-columns: 8fr 1fr;
 }
+
+/* End Chat */
