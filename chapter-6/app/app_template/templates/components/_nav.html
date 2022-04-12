@@ -1,0 +1,23 @@
+<ul>
+    {# Links always visible #}
+    <li>
+        <a href="#">Home</a>
+    </li>
+{% if request.user.is_authenticated %}
+    {# Links only if identified #}
+    <li>
+        <a href="#">Profile</a>
+    </li>
+    <li>
+        <a href="#">Logout</a>
+    </li>
+{% else %}
+    {# Links only if not identified #}
+    <li>
+        <a href="#">Signup</a>
+    </li>
+    <li>
+        <a href="#">Login</a>
+    </li>
+{% endif %}
+</ul>

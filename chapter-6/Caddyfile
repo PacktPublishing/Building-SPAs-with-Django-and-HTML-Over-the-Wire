@@ -1,0 +1,18 @@
+http://hello.localhost {
+
+    root * /usr/src/app/
+    encode gzip zstd
+
+    @notStatic {
+      not path /static/* /media/*
+    }
+
+    reverse_proxy @notStatic django:8000
+
+    file_server /static/*
+    file_server /media/*
+}
+
+http://webmail.localhost {
+    reverse_proxy mailhog:8025
+}
