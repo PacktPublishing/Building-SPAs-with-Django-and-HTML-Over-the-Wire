@@ -22,14 +22,43 @@ function sendData(message, webSocket) {
     EVENTS
 */
 
+function handleClickNavigation(event) {
+    event.preventDefault();
+    sendData({
+        action: 'Change page',
+        data: {
+            page: event.target.dataset.target
+        }
+    }, myWebSocket);
+}
+
+/**
+ * Send message to WebSockets server to change the page
+ * @param {Event} event
+ * @return {void}
+ */
+function setEventsNavigation(webSocket) {
+    document.querySelectorAll('.nav__link').forEach(link => {
+        link.removeEventListener('click', handleClickNavigation, false);
+        link.addEventListener('click', handleClickNavigation, false);
+    });
+}
+
 // Event when a new message is received by WebSockets
 myWebSocket.addEventListener("message", (event) => {
     // Parse the data received
     const data = JSON.parse(event.data);
     // Renders the HTML received from the Consumer
     document.querySelector(data.selector).innerHTML = data.html;
+    // Update URL
+    history.pushState({}, '', data.url)
+    /**
+     *  Reassigns the events of the newly rendered HTML
+     */
+    setEventsNavigation(myWebSocket);
 });
 
 /*
     INITIALIZATION
 */
+setEventsNavigation(myWebSocket);

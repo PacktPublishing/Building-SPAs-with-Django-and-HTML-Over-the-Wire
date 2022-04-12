@@ -1,23 +1,23 @@
 <ul>
     {# Links always visible #}
     <li>
-        <a href="#">Home</a>
+        <a href="#" class="nav__link" data-target="home">Home</a>
     </li>
 {% if request.user.is_authenticated %}
     {# Links only if identified #}
     <li>
-        <a href="#">Profile</a>
+        <a href="#" class="nav__link" data-target="profile">Profile</a>
     </li>
     <li>
-        <a href="#">Logout</a>
+        <a href="#" class="nav__link" data-target="logout">Logout</a>
     </li>
 {% else %}
     {# Links only if not identified #}
     <li>
-        <a href="#">Signup</a>
+        <a href="#" class="nav__link" data-target="login">Login</a>
     </li>
     <li>
-        <a href="#">Login</a>
+        <a href="#" class="nav__link" data-target="signup">Signup</a>
     </li>
 {% endif %}
 </ul>
