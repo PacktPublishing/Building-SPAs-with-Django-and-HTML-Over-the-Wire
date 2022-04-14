@@ -8,16 +8,23 @@ from django.contrib.auth.models import User
 
 def send_page(self, page):
     """Render HTML and send page to client"""
-    data = {}
+
+    # Prepare context data for page
+    context = {}
     match page:
         case "login":
-            data = {"form": LoginForm()}
+            context = {"form": LoginForm()}
         case "signup":
-            data = {"form": SignupForm()}
+            context = {"form": SignupForm()}
 
+    # Add user to context if logged in
+    if "user" in self.scope:
+        context.update({ "user": self.scope["user"]})
+
+    # Render HTML and send page to client
     self.send_html({
         "selector": "#main",
-        "html": render_to_string(f"pages/{page}.html", data),
+        "html": render_to_string(f"pages/{page}.html", context),
         "append": False,
         "url": reverse(page)
         ,
