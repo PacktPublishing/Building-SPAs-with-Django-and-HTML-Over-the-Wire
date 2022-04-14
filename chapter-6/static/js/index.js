@@ -43,10 +43,23 @@ function handleClickNavigation(event) {
  * @return {void}
  */
 function setEventsNavigation(webSocket) {
-    document.querySelectorAll('.nav__link').forEach(link => {
+    document.querySelectorAll('.nav__link--page').forEach(link => {
         link.removeEventListener('click', handleClickNavigation, false);
         link.addEventListener('click', handleClickNavigation, false);
     });
+}
+
+
+/**
+ * Send message to Logout
+ * @param {Event} event
+ * @return {void}
+ */
+function logout(event) {
+    event.preventDefault();
+    sendData({
+        action: 'Logout'
+    }, myWebSocket);
 }
 
 /**
@@ -83,12 +96,19 @@ myWebSocket.addEventListener("message", (event) => {
 });
 
 function updateEvents() {
+    // Nav
     setEventsNavigation(myWebSocket);
     // Singup form
     const signupForm = document.querySelector('#signup-form');
     if (signupForm !== null) {
         signupForm.removeEventListener('submit', signup, false);
         signupForm.addEventListener('submit', signup, false);
+    }
+    // Logout
+    const logout = document.querySelector("#logout");
+    if (logout !== null) {
+        logout.removeEventListener('click', logout, false);
+        logout.addEventListener('click', logout, false);
     }
 }
 

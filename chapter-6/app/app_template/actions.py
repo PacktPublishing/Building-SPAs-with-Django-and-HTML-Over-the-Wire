@@ -20,14 +20,19 @@ def send_page(self, page):
     # Add user to context if logged in
     if "user" in self.scope:
         context.update({ "user": self.scope["user"]})
+    context.update({"active_nav": page})
 
-    # Render HTML and send page to client
+    # Render HTML nav and send to client
+    self.send_html({
+        "selector": "#nav",
+        "html": render_to_string("components/_nav.html", context),
+    })
+
+    # Render HTML page and send to client
     self.send_html({
         "selector": "#main",
         "html": render_to_string(f"pages/{page}.html", context),
-        "append": False,
-        "url": reverse(page)
-        ,
+        "url": reverse(page),
     })
 
 
@@ -52,3 +57,9 @@ def signup(self, data):
             "append": False,
             "url": reverse("signup")
         })
+
+def logout(self):
+    """Log out user"""
+    async_to_sync(logout)(self.scope)
+    self.scope["session"].save()
+    send_page(self, "login")

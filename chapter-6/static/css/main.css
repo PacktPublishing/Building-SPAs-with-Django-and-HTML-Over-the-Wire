@@ -5,6 +5,7 @@
     --color__background: #f6f4f3;
     --color__gray: #ccc;
     --color__black: #000;
+    --color__active: #00a0ff;
 }
 
 * {
@@ -25,13 +26,18 @@ body {
     max-width: 40rem;
 }
 
-.nav ul {
+.nav__ul {
   display: flex;
   list-style: none;
   padding: 0;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+
+.nav__link.active {
+    color: var(--color__active);
+    text-decoration: none;
 }
 
 .button {

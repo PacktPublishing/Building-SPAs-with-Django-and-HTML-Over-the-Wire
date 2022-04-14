@@ -1,6 +1,6 @@
 # app/app_template/consumers.py
 from channels.generic.websocket import JsonWebsocketConsumer
-from .actions import send_page, signup
+from .actions import send_page, signup, logout
 
 
 class ExampleConsumer(JsonWebsocketConsumer):
@@ -30,6 +30,8 @@ class ExampleConsumer(JsonWebsocketConsumer):
                 send_page(self, data["page"])
             case "Signup":
                 signup(self, data)
+            case "Logout":
+                logout(self)
 
 
     def send_html(self, event):
@@ -37,7 +39,7 @@ class ExampleConsumer(JsonWebsocketConsumer):
         data = {
             "selector": event["selector"],
             "html": event["html"],
-            "append": event["append"],
+            "append": "append" in event and event["append"],
             "url": event["url"] if "url" in event else "",
         }
         self.send_json(data)
