@@ -22,6 +22,11 @@ function sendData(message, webSocket) {
     EVENTS
 */
 
+/**
+ * Send message to update page
+ * @param {Event} event
+ * @return {void}
+ */
 function handleClickNavigation(event) {
     event.preventDefault();
     sendData({
@@ -34,7 +39,7 @@ function handleClickNavigation(event) {
 
 /**
  * Send message to WebSockets server to change the page
- * @param {Event} event
+ * @param {WebSocket} webSocket
  * @return {void}
  */
 function setEventsNavigation(webSocket) {
@@ -42,6 +47,24 @@ function setEventsNavigation(webSocket) {
         link.removeEventListener('click', handleClickNavigation, false);
         link.addEventListener('click', handleClickNavigation, false);
     });
+}
+
+/**
+ * Send form from signup page
+ * @param {Event} event
+ * @return {void}
+ */
+function signup(event) {
+    event.preventDefault();
+    sendData({
+        action: 'Signup',
+        data: {
+            username: document.querySelector('#signup-username').value,
+            email: document.querySelector('#signup-email').value,
+            password: document.querySelector('#signup-password').value,
+            password_confirm: document.querySelector('#signup-password-confirm').value
+        }
+    }, myWebSocket);
 }
 
 // Event when a new message is received by WebSockets
@@ -55,10 +78,21 @@ myWebSocket.addEventListener("message", (event) => {
     /**
      *  Reassigns the events of the newly rendered HTML
      */
-    setEventsNavigation(myWebSocket);
+    updateEvents();
+
 });
+
+function updateEvents() {
+    setEventsNavigation(myWebSocket);
+    // Singup form
+    const signupForm = document.querySelector('#signup-form');
+    if (signupForm !== null) {
+        signupForm.removeEventListener('submit', signup, false);
+        signupForm.addEventListener('submit', signup, false);
+    }
+}
 
 /*
     INITIALIZATION
 */
-setEventsNavigation(myWebSocket);
+updateEvents();

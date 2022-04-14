@@ -18,7 +18,7 @@ class SignupForm(forms.Form):
     username = forms.CharField(
         label="Username",
         max_length=255,
-        widget=forms.TextInput(attrs={"id": "signup-first-name", "class": "input"}),
+        widget=forms.TextInput(attrs={"id": "signup-username", "class": "input"}),
     )
     email = forms.EmailField(
         label="Email",

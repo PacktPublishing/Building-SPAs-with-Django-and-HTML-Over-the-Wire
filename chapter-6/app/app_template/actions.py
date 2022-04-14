@@ -40,7 +40,7 @@ def signup(self, data):
     else:
         # Send form errors
         self.send_html({
-            "selector": "#signup",
+            "selector": "#main",
             "html": render_to_string("pages/signup.html", {"form": form}),
             "append": False,
             "url": reverse("signup")
