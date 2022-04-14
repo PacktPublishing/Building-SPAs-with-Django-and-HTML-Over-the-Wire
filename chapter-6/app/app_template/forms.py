@@ -15,15 +15,10 @@ class LoginForm(forms.Form):
 
 
 class SignupForm(forms.Form):
-    first_name = forms.CharField(
-        label="First Name",
+    username = forms.CharField(
+        label="Username",
         max_length=255,
         widget=forms.TextInput(attrs={"id": "signup-first-name", "class": "input"}),
-    )
-    last_name = forms.CharField(
-        label="Last Name",
-        max_length=255,
-        widget=forms.TextInput(attrs={"id": "signup-last-name", "class": "input"}),
     )
     email = forms.EmailField(
         label="Email",
