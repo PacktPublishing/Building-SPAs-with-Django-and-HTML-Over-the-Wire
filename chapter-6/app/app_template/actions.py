@@ -4,6 +4,8 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from channels.auth import login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from datetime import datetime
 
 
 def send_page(self, page):
@@ -39,7 +41,8 @@ def send_page(self, page):
 def signup(self, data):
     """Sign up user"""
     form = SignupForm(data)
-    if form.is_valid() and data["password"] == data["password_confirm"]:
+    user_exist = User.objects.filter(email=data["email"]).exists()
+    if form.is_valid() and data["password"] == data["password_confirm"] and not user_exist:
         # Create user
         user = User.objects.create_user(data["username"], data["email"], data["password"])
         user.is_active = True
@@ -53,13 +56,41 @@ def signup(self, data):
         # Send form errors
         self.send_html({
             "selector": "#main",
-            "html": render_to_string("pages/signup.html", {"form": form}),
+            "html": render_to_string("pages/signup.html", {"form": form, "user_exist": user_exist, "passwords_do_not_match": data["password"] != data["password_confirm"]}),
             "append": False,
             "url": reverse("signup")
         })
+
+
+def login(self, data):
+    """Log in user"""
+    form = LoginForm(data)
+    user = authenticate(email=data["email"], password=data["password"])
+    if form.is_valid() and user is not None:
+        async_to_sync(login)(self.scope, user)
+        self.scope["session"].save()
+        send_page(self, "profile")
+    else:
+        self.send_html({
+            "selector": "#main",
+            "html": render_to_string("pages/login.html", {"form": form, "user_does_not_exist": user is None}),
+            "append": False,
+            "url": reverse("login")
+        })
+
 
 def logout(self):
     """Log out user"""
     async_to_sync(logout)(self.scope)
     self.scope["session"].save()
     send_page(self, "login")
+
+
+def add_lap(self):
+    """Add lap to Home page"""
+    # Get current time
+    self.send_html({
+        "selector": "#laps",
+        "html": render_to_string("components/_lap.html", {"time": datetime.now()}),
+        "append": True,
+    })

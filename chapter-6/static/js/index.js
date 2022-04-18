@@ -80,12 +80,36 @@ function signup(event) {
     }, myWebSocket);
 }
 
+
+function login(event) {
+    event.preventDefault();
+    sendData({
+        action: 'Login',
+        data: {
+            email: document.querySelector('#login-email').value,
+            password: document.querySelector('#login-password').value
+        }
+    }, myWebSocket);
+}
+
+function addLap(event) {
+    sendData({
+        action: 'Add lap',
+        data: {}
+    }, myWebSocket);
+}
+
 // Event when a new message is received by WebSockets
 myWebSocket.addEventListener("message", (event) => {
     // Parse the data received
     const data = JSON.parse(event.data);
     // Renders the HTML received from the Consumer
-    document.querySelector(data.selector).innerHTML = data.html;
+    const selector = document.querySelector(data.selector);
+    if (data.append) {
+        selector.innerHTML += data.html;
+    } else {
+        selector.innerHTML = data.html;
+    }
     // Update URL
     history.pushState({}, '', data.url)
     /**
@@ -104,12 +128,20 @@ function updateEvents() {
         signupForm.removeEventListener('submit', signup, false);
         signupForm.addEventListener('submit', signup, false);
     }
+    // Login
+    const loginForm = document.querySelector('#login-form');
+    if (loginForm !== null) {
+        loginForm.removeEventListener('submit', login, false);
+        loginForm.addEventListener('submit', login, false);
+    }
     // Logout
     const logout = document.querySelector("#logout");
     if (logout !== null) {
         logout.removeEventListener('click', logout, false);
         logout.addEventListener('click', logout, false);
     }
+    // Add lap
+    document.querySelector("#add-lap").addEventListener('click', addLap, false);
 }
 
 /*

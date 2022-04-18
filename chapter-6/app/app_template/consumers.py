@@ -1,6 +1,6 @@
 # app/app_template/consumers.py
 from channels.generic.websocket import JsonWebsocketConsumer
-from .actions import send_page, signup, logout
+import app.app_template.actions as actions
 
 
 class ExampleConsumer(JsonWebsocketConsumer):
@@ -8,6 +8,7 @@ class ExampleConsumer(JsonWebsocketConsumer):
     def connect(self):
         """Event when client connects"""
         # Accept the connection
+        self.user = self.scope["user"]
         self.accept()
 
 
@@ -27,11 +28,15 @@ class ExampleConsumer(JsonWebsocketConsumer):
         # Depending on the action we will do one task or another.
         match data_received["action"]:
             case "Change page":
-                send_page(self, data["page"])
+                actions.send_page(self, data["page"])
             case "Signup":
-                signup(self, data)
+                actions.signup(self, data)
+            case "Login":
+                actions.login(self, data)
             case "Logout":
-                logout(self)
+                actions.logout(self)
+            case "Add lap":
+                actions.add_lap(self)
 
 
     def send_html(self, event):
