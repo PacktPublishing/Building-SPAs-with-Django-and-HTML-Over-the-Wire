@@ -88,6 +88,11 @@ function signup(event) {
 }
 
 
+/**
+ * Send form from login page
+ * @param {Event} event
+ * @return {void}
+ */
 function login(event) {
     event.preventDefault();
     sendData({
@@ -99,11 +104,34 @@ function login(event) {
     }, myWebSocket);
 }
 
+
+/**
+ * Send new Lap
+ * @param {Event} event
+ * @return {void}
+ */
 function addLap(event) {
     sendData({
         action: 'Add lap',
         data: {}
     }, myWebSocket);
+}
+
+/**
+ * Send new task to TODO list
+ * @param event
+ * @return {void}
+ */
+function addTask(event) {
+    const task = document.querySelector('#task');
+    sendData({
+        action: 'Add task',
+        data: {
+            task: task.value
+        }
+    }, myWebSocket);
+    // Clear input
+    task.value = '';
 }
 
 // Event when a new message is received by WebSockets
@@ -126,6 +154,10 @@ myWebSocket.addEventListener("message", (event) => {
 
 });
 
+/**
+ * Update events in every page
+ * return {void}
+ */
 function updateEvents() {
     // Nav
     setEventsNavigation(myWebSocket);
@@ -146,6 +178,12 @@ function updateEvents() {
     if (addLapButton !== null) {
         addLapButton.removeEventListener('click', addLap, false);
         addLapButton.addEventListener('click', addLap, false);
+    }
+    // Add task
+    const addTaskButton = document.querySelector('#add-task');
+    if (addTaskButton !== null) {
+        addTaskButton.removeEventListener('click', addTask, false);
+        addTaskButton.addEventListener('click', addTask, false);
     }
 }
 

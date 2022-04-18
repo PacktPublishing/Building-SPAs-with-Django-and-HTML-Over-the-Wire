@@ -37,6 +37,11 @@ def send_page(self, page):
         "url": reverse(page),
     })
 
+    # Hidrate page
+    match page:
+        case "home":
+            update_TODO(self)
+
 
 def action_signup(self, data):
     """Sign up user"""
@@ -85,9 +90,27 @@ def action_logout(self):
 
 def add_lap(self):
     """Add lap to Home page"""
-    # Get current time
+    # Send current time to client
     self.send_html({
         "selector": "#laps",
         "html": render_to_string("components/_lap.html", {"time": datetime.now()}),
         "append": True,
+    })
+
+
+def add_task(self, data):
+    """Add task from TODO section"""
+    # Add task to list
+    self.scope["session"]["tasks"].append(data["task"])
+    self.scope["session"].save()
+    # Update task list
+    update_TODO(self)
+
+
+def update_TODO(self):
+    """Update TODO list"""
+    self.send_html({
+        "selector": "#todo",
+        "html": render_to_string("components/_tasks.html", {"tasks": self.scope["session"]["tasks"]}),
+        "append": False,
     })
