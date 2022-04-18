@@ -30,11 +30,11 @@ class ExampleConsumer(JsonWebsocketConsumer):
             case "Change page":
                 actions.send_page(self, data["page"])
             case "Signup":
-                actions.signup(self, data)
+                actions.action_signup(self, data)
             case "Login":
-                actions.login(self, data)
+                actions.action_login(self, data)
             case "Logout":
-                actions.logout(self)
+                actions.action_logout(self)
             case "Add lap":
                 actions.add_lap(self)
 

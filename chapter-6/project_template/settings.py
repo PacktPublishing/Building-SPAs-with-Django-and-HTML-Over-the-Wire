@@ -154,3 +154,7 @@ CHANNEL_LAYERS = {
 }
 
 ASGI_APPLICATION = "project_template.asgi.application"
+
+AUTHENTICATION_BACKENDS = (
+    'app.app_template.backends.EmailBackend',
+)

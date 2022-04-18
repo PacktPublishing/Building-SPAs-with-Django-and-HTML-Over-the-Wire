@@ -38,7 +38,7 @@ def send_page(self, page):
     })
 
 
-def signup(self, data):
+def action_signup(self, data):
     """Sign up user"""
     form = SignupForm(data)
     user_exist = User.objects.filter(email=data["email"]).exists()
@@ -48,10 +48,7 @@ def signup(self, data):
         user.is_active = True
         user.save()
         # Login user
-        async_to_sync(login)(self.scope, user)
-        self.scope["session"].save()
-        # Redirect to profile page
-        send_page(self, "profile")
+        send_page(self, "login")
     else:
         # Send form errors
         self.send_html({
@@ -62,11 +59,11 @@ def signup(self, data):
         })
 
 
-def login(self, data):
+def action_login(self, data):
     """Log in user"""
     form = LoginForm(data)
-    user = authenticate(email=data["email"], password=data["password"])
-    if form.is_valid() and user is not None:
+    user = authenticate(username=data["email"], password=data["password"])
+    if form.is_valid() and user:
         async_to_sync(login)(self.scope, user)
         self.scope["session"].save()
         send_page(self, "profile")
@@ -79,7 +76,7 @@ def login(self, data):
         })
 
 
-def logout(self):
+def action_logout(self):
     """Log out user"""
     async_to_sync(logout)(self.scope)
     self.scope["session"].save()
