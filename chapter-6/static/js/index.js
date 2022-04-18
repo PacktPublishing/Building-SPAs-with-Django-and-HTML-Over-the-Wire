@@ -43,10 +43,16 @@ function handleClickNavigation(event) {
  * @return {void}
  */
 function setEventsNavigation(webSocket) {
+    // Navigation
     document.querySelectorAll('.nav__link--page').forEach(link => {
         link.removeEventListener('click', handleClickNavigation, false);
         link.addEventListener('click', handleClickNavigation, false);
     });
+    // Logout
+    const buttonLogout = document.querySelector('#logout');
+    if (buttonLogout !== null) {
+        buttonLogout.addEventListener('click', logout, false);
+    }
 }
 
 
@@ -58,7 +64,8 @@ function setEventsNavigation(webSocket) {
 function logout(event) {
     event.preventDefault();
     sendData({
-        action: 'Logout'
+        action: 'Logout',
+        data: {}
     }, myWebSocket);
 }
 
@@ -134,14 +141,12 @@ function updateEvents() {
         loginForm.removeEventListener('submit', login, false);
         loginForm.addEventListener('submit', login, false);
     }
-    // Logout
-    const logout = document.querySelector("#logout");
-    if (logout !== null) {
-        logout.removeEventListener('click', logout, false);
-        logout.addEventListener('click', logout, false);
-    }
     // Add lap
-    document.querySelector("#add-lap").addEventListener('click', addLap, false);
+    const addLapButton = document.querySelector('#add-lap');
+    if (addLapButton !== null) {
+        addLapButton.removeEventListener('click', addLap, false);
+        addLapButton.addEventListener('click', addLap, false);
+    }
 }
 
 /*
