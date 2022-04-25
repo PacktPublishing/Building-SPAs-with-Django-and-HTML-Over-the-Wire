@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from .forms import LoginForm, SignupForm
 from django.contrib.auth.decorators import login_required
 
