@@ -1,3 +1,3 @@
 {% for task in tasks %}
-    <li>{{ task }}</li>
+    {% include "components/_task-item.html" with task=task %}
 {% endfor %}

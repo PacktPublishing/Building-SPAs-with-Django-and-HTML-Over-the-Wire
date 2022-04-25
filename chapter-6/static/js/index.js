@@ -140,6 +140,7 @@ myWebSocket.addEventListener("message", (event) => {
     const data = JSON.parse(event.data);
     // Renders the HTML received from the Consumer
     const selector = document.querySelector(data.selector);
+    // If append is received, it will be appended. Otherwise the entire DOM will be replaced.
     if (data.append) {
         selector.innerHTML += data.html;
     } else {
@@ -151,7 +152,6 @@ myWebSocket.addEventListener("message", (event) => {
      *  Reassigns the events of the newly rendered HTML
      */
     updateEvents();
-
 });
 
 /**

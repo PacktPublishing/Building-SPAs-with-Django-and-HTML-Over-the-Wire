@@ -14,6 +14,8 @@ def send_page(self, page):
     # Prepare context data for page
     context = {}
     match page:
+        case "home":
+            context = {"tasks": self.scope["session"]["tasks"] if "tasks" in self.scope["session"] else []}
         case "login":
             context = {"form": LoginForm()}
         case "signup":
@@ -36,11 +38,6 @@ def send_page(self, page):
         "html": render_to_string(f"pages/{page}.html", context),
         "url": reverse(page),
     })
-
-    # Hidrate page
-    match page:
-        case "home":
-            update_TODO(self)
 
 
 def action_signup(self, data):
@@ -100,17 +97,12 @@ def add_lap(self):
 
 def add_task(self, data):
     """Add task from TODO section"""
+    # Update task list
+    self.send_html({
+        "selector": "#todo",
+        "html": render_to_string("components/_task-item.html", {"task": data["task"]}),
+        "append": True,
+    })
     # Add task to list
     self.scope["session"]["tasks"].append(data["task"])
     self.scope["session"].save()
-    # Update task list
-    update_TODO(self)
-
-
-def update_TODO(self):
-    """Update TODO list"""
-    self.send_html({
-        "selector": "#todo",
-        "html": render_to_string("components/_tasks.html", {"tasks": self.scope["session"]["tasks"]}),
-        "append": False,
-    })
