@@ -1,0 +1,8 @@
+<h1>Login</h1>
+<form id="login-form">
+    {% if user_does_not_exist %}
+    <h2>The user does not exist or the password is wrong.</h2>
+    {% endif %}
+    {{ form.as_p }}
+    <input type="submit" class="button" value="Login">
+</form>

@@ -1,0 +1,17 @@
+<section>
+    <h1>Welcome to an example of browsing with WebSockets over the Wire</h1>
+    <p>You will be able to experience a simple structure.</p>
+</section>
+<section>
+    <h2>Laps</h2>
+    <p>
+        <button id="add-lap">Add lap</button>
+    </p>
+    <ul id="laps"></ul>
+</section>
+<section>
+    <h2>TODO</h2>
+    <input type="text" id="task">
+    <button id="add-task">Add task</button>
+    <ul id="todo">{% include "components/_tasks.html" with tasks=tasks %}</ul>
+</section>

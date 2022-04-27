@@ -1,0 +1,11 @@
+<h1>Signup</h1>
+<form id="signup-form">
+    {% if user_exist %}
+        <p>Email already exist</p>
+    {% endif %}
+    {% if passwords_do_not_match %}
+        <p>Passwords do not match.</p>
+    {% endif %}
+    {{ form.as_p }}
+    <input type="submit" class="button" value="Signup">
+</form>

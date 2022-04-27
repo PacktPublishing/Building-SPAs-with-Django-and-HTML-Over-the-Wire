@@ -1,0 +1,53 @@
+<ul class="nav__ul">
+    {# Links always visible #}
+    <li>
+        <a
+                href="#"
+                class="nav__link nav__link--page{% if active_nav == "home" %} active{% endif %}"
+                data-target="home"
+        >
+            Home
+        </a>
+    </li>
+{% if user.is_authenticated %}
+    {# Links only if identified #}
+    <li>
+        <a
+                href="#"
+                class="nav__link nav__link--page{% if active_nav == "profile" %} active{% endif %}"
+                data-target="profile"
+        >
+            Profile
+        </a>
+    </li>
+    <li>
+        <a
+                href="#"
+                class="nav__link"
+                id="logout"
+        >
+            Logout
+        </a>
+    </li>
+{% else %}
+    {# Links only if not identified #}
+    <li>
+        <a
+                href="#"
+                class="nav__link nav__link--page{% if active_nav == "login" %} active{% endif %}"
+                data-target="login"
+        >
+            Login
+        </a>
+    </li>
+    <li>
+        <a
+                href="#"
+                class="nav__link nav__link--page{% if active_nav == "signup" %} active{% endif %}"
+                data-target="signup"
+        >
+            Signup
+        </a>
+    </li>
+{% endif %}
+</ul>

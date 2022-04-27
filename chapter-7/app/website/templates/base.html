@@ -1,0 +1,23 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Example website</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script defer src="{% static 'js/index.js' %}"></script>
+</head>
+<body
+        data-host="{{ request.get_host }}"
+        data-scheme="{{ request.scheme }}"
+>
+    <div class="container">
+        <header>
+            <nav id="nav" class="nav">{% include 'components/_nav.html' %}</nav>
+        </header>
+        <main id="main">{% include page %}</main>
+        <footer class="footer">My footer</footer>
+    </div>
+</body>
+</html>
