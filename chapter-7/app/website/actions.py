@@ -30,3 +30,15 @@ def send_page(self, data={}):
         "html": render_to_string(f"pages/{page}.html", context),
         "url": reverse(page),
     })
+
+
+def search(self, data={}):
+    """Search for posts"""
+    # Prepare context data for page
+    context = {"posts": Post.objects.filter(title__icontains=data["search"])[:POST_PER_PAGE]}
+
+    # Render HTML page and send to client
+    self.send_html({
+        "selector": "#all-posts",
+        "html": render_to_string("components/all_posts/list.html", context),
+    })

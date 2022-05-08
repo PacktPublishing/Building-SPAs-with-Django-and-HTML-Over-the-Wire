@@ -3,7 +3,7 @@ from channels.generic.websocket import JsonWebsocketConsumer
 import app.website.actions as actions
 
 
-class ExampleConsumer(JsonWebsocketConsumer):
+class BlogConsumer(JsonWebsocketConsumer):
 
     def connect(self):
         """Event when client connects"""
@@ -32,6 +32,8 @@ class ExampleConsumer(JsonWebsocketConsumer):
         match data_received["action"]:
             case "Change page":
                 actions.send_page(self, data)
+            case "Search":
+                actions.search(self, data)
             case "Next page":
                 pass
             case "Add comment":

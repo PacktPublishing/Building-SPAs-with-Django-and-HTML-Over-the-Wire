@@ -2,7 +2,7 @@
     VARIABLES
 */
 // Connect to WebSockets server (SocialNetworkConsumer)
-const myWebSocket = new WebSocket(`${document.body.dataset.scheme === 'http' ? 'ws' : 'wss'}://${ document.body.dataset.host }/ws/example/`);
+const myWebSocket = new WebSocket(`${document.body.dataset.scheme === 'http' ? 'ws' : 'wss'}://${ document.body.dataset.host }/ws/blog/`);
 
 /*
     FUNCTIONS
@@ -56,84 +56,6 @@ function setEventsNavigation(webSocket) {
 }
 
 
-/**
- * Send message to Logout
- * @param {Event} event
- * @return {void}
- */
-function logout(event) {
-    event.preventDefault();
-    sendData({
-        action: 'Logout',
-        data: {}
-    }, myWebSocket);
-}
-
-/**
- * Send form from signup page
- * @param {Event} event
- * @return {void}
- */
-function signup(event) {
-    event.preventDefault();
-    sendData({
-        action: 'Signup',
-        data: {
-            username: document.querySelector('#signup-username').value,
-            email: document.querySelector('#signup-email').value,
-            password: document.querySelector('#signup-password').value,
-            password_confirm: document.querySelector('#signup-password-confirm').value
-        }
-    }, myWebSocket);
-}
-
-
-/**
- * Send form from login page
- * @param {Event} event
- * @return {void}
- */
-function login(event) {
-    event.preventDefault();
-    sendData({
-        action: 'Login',
-        data: {
-            email: document.querySelector('#login-email').value,
-            password: document.querySelector('#login-password').value
-        }
-    }, myWebSocket);
-}
-
-
-/**
- * Send new Lap
- * @param {Event} event
- * @return {void}
- */
-function addLap(event) {
-    sendData({
-        action: 'Add lap',
-        data: {}
-    }, myWebSocket);
-}
-
-/**
- * Send new task to TODO list
- * @param event
- * @return {void}
- */
-function addTask(event) {
-    const task = document.querySelector('#task');
-    sendData({
-        action: 'Add task',
-        data: {
-            task: task.value
-        }
-    }, myWebSocket);
-    // Clear input
-    task.value = '';
-}
-
 // Event when a new message is received by WebSockets
 myWebSocket.addEventListener("message", (event) => {
     // Parse the data received
@@ -154,6 +76,23 @@ myWebSocket.addEventListener("message", (event) => {
     updateEvents();
 });
 
+
+/**
+ * Event to request a search
+ * @param event
+ */
+function search(event) {
+    event.preventDefault();
+    const search = event.target.querySelector('#search').value;
+    sendData({
+        action: 'Search',
+        data: {
+            search: search
+        },
+    }, myWebSocket);
+}
+
+
 /**
  * Update events in every page
  * return {void}
@@ -162,28 +101,10 @@ function updateEvents() {
     // Nav
     setEventsNavigation(myWebSocket);
     // Singup form
-    const signupForm = document.querySelector('#signup-form');
-    if (signupForm !== null) {
-        signupForm.removeEventListener('submit', signup, false);
-        signupForm.addEventListener('submit', signup, false);
-    }
-    // Login
-    const loginForm = document.querySelector('#login-form');
-    if (loginForm !== null) {
-        loginForm.removeEventListener('submit', login, false);
-        loginForm.addEventListener('submit', login, false);
-    }
-    // Add lap
-    const addLapButton = document.querySelector('#add-lap');
-    if (addLapButton !== null) {
-        addLapButton.removeEventListener('click', addLap, false);
-        addLapButton.addEventListener('click', addLap, false);
-    }
-    // Add task
-    const addTaskButton = document.querySelector('#add-task');
-    if (addTaskButton !== null) {
-        addTaskButton.removeEventListener('click', addTask, false);
-        addTaskButton.addEventListener('click', addTask, false);
+    const searchForm = document.querySelector('#search-form');
+    if (searchForm !== null) {
+        searchForm.removeEventListener('submit', search, false);
+        searchForm.addEventListener('submit', search, false);
     }
 }
 

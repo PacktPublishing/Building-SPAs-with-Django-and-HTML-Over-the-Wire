@@ -10,7 +10,7 @@ from channels.security.websocket import OriginValidator
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.urls import re_path
-from app.website.consumers import ExampleConsumer
+from app.website.consumers import BlogConsumer
 
 
 application = ProtocolTypeRouter(
@@ -21,7 +21,7 @@ application = ProtocolTypeRouter(
         "websocket": OriginValidator(AuthMiddlewareStack(
             URLRouter(
                 [
-                    re_path(r"^ws/example/$", ExampleConsumer.as_asgi()),
+                    re_path(r"^ws/blog/$", BlogConsumer.as_asgi()),
                 ]
             )
         ), settings.ALLOWED_HOSTS)

@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .forms import CommentForm
-from django.contrib.auth.decorators import login_required
+from .forms import SearchForm, CommentForm
+from .models import Post
 
 
 def all_posts(request):
@@ -8,17 +8,22 @@ def all_posts(request):
         request,
         "base.html",
         {
-            "page": "pages/list_posts.html",
+            "posts": Post.objects.all()[:5],
+            "page": "pages/all_posts.html",
             "active_nav": "all_posts",
+            "form": SearchForm(),
         },
     )
 
 
-def single(request):
+def single(request, slug):
     return render(
         request,
         "base.html",
-        {"page": "pages/single.html", "form": CommentForm()},
+        {
+            "post": Post.objects.get(slug=slug),
+            "page": "pages/single.html", "form": CommentForm()
+        },
     )
 
 
@@ -26,7 +31,7 @@ def about(request):
     return render(
         request,
         "base.html",
-        {"page": "pages/about.html", "active_nav": "about"},
+        {"page": "pages/about-us.html", "active_nav": "about"},
     )
 
 
