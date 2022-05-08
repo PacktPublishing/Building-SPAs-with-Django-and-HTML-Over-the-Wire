@@ -8,19 +8,22 @@ Post.objects.all().delete()
 # Create fake object
 fake = Faker()
 
+def get_full_name():
+    return f"{fake.first_name()} {fake.last_name()}"
+
 # Create 30 posts
 for _ in range(30):
     post = Post(
         title=fake.sentence()[:200],
-        author=fake.fullname()[:20],
         content=fake.text(),
+        author=get_full_name()[:20],
     )
     post.save()
 
 # Create 150 comments
 for _ in range(150):
     comment = Comment(
-        author=fake.fullname()[:20],
+        author=get_full_name()[:20],
         content=fake.text(),
         post=Post.objects.order_by("?").first(),
     )

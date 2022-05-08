@@ -14,7 +14,7 @@ services:
       ALLOWED_HOSTS: blog.localhost
       SECRET_KEY: mysecret
       DB_ENGINE: django.db.backends.postgresql
-      DB_NAME: hello_db
+      DB_NAME: blog_db
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_HOST: postgresql
@@ -44,11 +44,11 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: hello_db
+      POSTGRES_DB: blog_db
     volumes:
       - ./postgres_data:/var/lib/postgresql/data/
-    expose:
-      - 5432
+    ports:
+      - 5432:5432
 
   redis:
     image: redis:alpine
