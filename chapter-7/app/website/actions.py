@@ -1,5 +1,5 @@
-from .models import Post, Comment
-from .forms import CommentForm
+from .models import Post
+from .forms import SearchForm, CommentForm
 from django.template.loader import render_to_string
 from django.urls import reverse
 
@@ -12,8 +12,11 @@ def send_page(self, data={}):
     page = data["page"]
     context = {}
     match page:
-        case "list":
-            context = {"posts": Post.objects.all().order_by("-created_at")[:POST_PER_PAGE]}
+        case "all posts":
+            context = {
+                "posts": Post.objects.all()[:POST_PER_PAGE],
+                "form": SearchForm(),
+            }
         case "single":
             context = {"post": Post.objects.get(id=data["id"]) ,"form": CommentForm()}
 
@@ -25,9 +28,10 @@ def send_page(self, data={}):
     })
 
     # Render HTML page and send to client
+    template_page = page.replace(" ", "_")
     self.send_html({
         "selector": "#main",
-        "html": render_to_string(f"pages/{page}.html", context),
+        "html": render_to_string(f"pages/{template_page}.html", context),
         "url": reverse(page),
     })
 

@@ -31,7 +31,7 @@ def about(request):
     return render(
         request,
         "base.html",
-        {"page": "pages/about-us.html", "active_nav": "about"},
+        {"page": "pages/about_us.html", "active_nav": "about"},
     )
 
 
