@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .forms import SearchForm, CommentForm
-from .models import Post
+from .models import Post, Comment
 from .actions import POST_PER_PAGE
 
 
@@ -19,13 +19,15 @@ def all_posts(request):
     )
 
 
-def single(request, slug):
+def single_post(request, slug):
+    post = list(filter(lambda post: post.slug == slug, Post.objects.all()))[0]
     return render(
         request,
         "base.html",
         {
-            "post": Post.objects.get(slug=slug),
-            "page": "pages/single.html",
+            "post": post,
+            "page": "pages/single_post.html",
+            "comments": Comment.objects.filter(post=post),
             "form": CommentForm(),
         },
     )

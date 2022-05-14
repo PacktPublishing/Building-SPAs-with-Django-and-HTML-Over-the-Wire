@@ -1,0 +1,27 @@
+<section>
+    {# Post #}
+    <article>
+        <header>
+            <h1>{{ post.title }}</h1>
+        </header>
+        <div>{{ post.content }}</div>
+        <footer>
+            <p>{{ post.author }}</p>
+        </footer>
+    </article>
+    {# End post #}
+
+    {# Comments #}
+    <div id="comments">
+        <h2>Comments</h2>
+        <form id="comment-form" action="">
+            {{ form.author }}
+            {{ form.content }}
+            <input class="button" type="submit" value="Add">
+        </form>
+        <div id="list-of-comments">
+            {% include "components/_list_of_comments.html" %}
+        </div>
+    </div>
+    {# End comments #}
+</section>

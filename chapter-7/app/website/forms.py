@@ -17,7 +17,28 @@ class SearchForm(forms.Form):
     )
 
 
-class CommentForm(forms.Form):
+class CommentForm(forms.ModelForm):
+
+    author = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "id": "author",
+                "class": "input",
+                "placeholder": "Your name...",
+            }
+        ),
+    )
+
+    content = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                "id": "content",
+                "class": "input",
+                "placeholder": "Your comment...",
+            }
+        ),
+    )
+
     class Meta:
         model = Comment
-        fields = ("name", "content")
+        fields = ("author", "content")
