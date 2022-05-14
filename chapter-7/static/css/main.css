@@ -67,3 +67,7 @@ body {
     margin-top: 1rem;
     text-align: center;
 }
+
+#search-form {
+    display: flex;
+}

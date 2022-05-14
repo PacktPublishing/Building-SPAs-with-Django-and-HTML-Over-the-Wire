@@ -4,7 +4,6 @@ import app.website.actions as actions
 
 
 class BlogConsumer(JsonWebsocketConsumer):
-
     def connect(self):
         """Event when client connects"""
         # Accept the connection
@@ -14,17 +13,16 @@ class BlogConsumer(JsonWebsocketConsumer):
             self.scope["session"]["tasks"] = []
             self.scope["session"].save()
 
-
     def disconnect(self, close_code):
         """Event when client disconnects"""
         pass
 
     def receive_json(self, data_received):
         """
-            Event when data is received
-            All information will arrive in 2 variables:
-            "action", with the action to be taken
-            "data" with the information
+        Event when data is received
+        All information will arrive in 2 variables:
+        "action", with the action to be taken
+        "data" with the information
         """
         # Get the data
         data = data_received["data"]
@@ -34,11 +32,10 @@ class BlogConsumer(JsonWebsocketConsumer):
                 actions.send_page(self, data)
             case "Search":
                 actions.search(self, data)
-            case "Next page":
-                pass
+            case "Add new posts":
+                actions.add_next_posts(self, data)
             case "Add comment":
                 pass
-
 
     def send_html(self, event):
         """Event: Send html to client"""

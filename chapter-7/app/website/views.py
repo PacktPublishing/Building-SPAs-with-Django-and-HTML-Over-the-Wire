@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .forms import SearchForm, CommentForm
 from .models import Post
+from .actions import POST_PER_PAGE
 
 
 def all_posts(request):
@@ -12,6 +13,8 @@ def all_posts(request):
             "page": "pages/all_posts.html",
             "active_nav": "all_posts",
             "form": SearchForm(),
+            "next_page": 2,
+            "is_last_page": (Post.objects.count() // POST_PER_PAGE) == 2,
         },
     )
 
@@ -22,7 +25,8 @@ def single(request, slug):
         "base.html",
         {
             "post": Post.objects.get(slug=slug),
-            "page": "pages/single.html", "form": CommentForm()
+            "page": "pages/single.html",
+            "form": CommentForm(),
         },
     )
 

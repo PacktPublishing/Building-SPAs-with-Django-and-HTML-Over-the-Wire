@@ -2,7 +2,7 @@
     VARIABLES
 */
 // Connect to WebSockets server (SocialNetworkConsumer)
-const myWebSocket = new WebSocket(`${document.body.dataset.scheme === 'http' ? 'ws' : 'wss'}://${ document.body.dataset.host }/ws/blog/`);
+const myWebSocket = new WebSocket(`${document.body.dataset.scheme === "http" ? "ws" : "wss"}://${ document.body.dataset.host }/ws/blog/`);
 
 /*
     FUNCTIONS
@@ -30,7 +30,7 @@ function sendData(message, webSocket) {
 function handleClickNavigation(event) {
     event.preventDefault();
     sendData({
-        action: 'Change page',
+        action: "Change page",
         data: {
             page: event.target.dataset.target
         }
@@ -44,14 +44,14 @@ function handleClickNavigation(event) {
  */
 function setEventsNavigation(webSocket) {
     // Navigation
-    document.querySelectorAll('.nav__link--page').forEach(link => {
-        link.removeEventListener('click', handleClickNavigation, false);
-        link.addEventListener('click', handleClickNavigation, false);
+    document.querySelectorAll(".nav__link--page").forEach(link => {
+        link.removeEventListener("click", handleClickNavigation, false);
+        link.addEventListener("click", handleClickNavigation, false);
     });
     // Logout
-    const buttonLogout = document.querySelector('#logout');
+    const buttonLogout = document.querySelector("#logout");
     if (buttonLogout !== null) {
-        buttonLogout.addEventListener('click', logout, false);
+        buttonLogout.addEventListener("click", logout, false);
     }
 }
 
@@ -69,7 +69,7 @@ myWebSocket.addEventListener("message", (event) => {
         selector.innerHTML = data.html;
     }
     // Update URL
-    history.pushState({}, '', data.url)
+    history.pushState({}, "", data.url)
     /**
      *  Reassigns the events of the newly rendered HTML
      */
@@ -83,11 +83,26 @@ myWebSocket.addEventListener("message", (event) => {
  */
 function search(event) {
     event.preventDefault();
-    const search = event.target.querySelector('#search').value;
+    const search = event.target.querySelector("#search").value;
     sendData({
-        action: 'Search',
+        action: "Search",
         data: {
             search: search
+        },
+    }, myWebSocket);
+}
+
+
+/**
+ * Event to add a next page with the pagination
+ * @param event
+ */
+function addNextPaginator(event) {
+    const nextPage = event.target.dataset.nextPage;
+    sendData({
+        action: "Add new posts",
+        data: {
+            page: nextPage
         },
     }, myWebSocket);
 }
@@ -100,11 +115,17 @@ function search(event) {
 function updateEvents() {
     // Nav
     setEventsNavigation(myWebSocket);
-    // Singup form
-    const searchForm = document.querySelector('#search-form');
+    // Search form
+    const searchForm = document.querySelector("#search-form");
     if (searchForm !== null) {
-        searchForm.removeEventListener('submit', search, false);
-        searchForm.addEventListener('submit', search, false);
+        searchForm.removeEventListener("submit", search, false);
+        searchForm.addEventListener("submit", search, false);
+    }
+    // Paginator
+    const paginator = document.querySelector("#paginator");
+    if (paginator !== null) {
+        paginator.removeEventListener("click", addNextPaginator, false);
+        paginator.addEventListener("click", addNextPaginator, false);
     }
 }
 

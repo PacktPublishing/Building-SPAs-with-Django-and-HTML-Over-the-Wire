@@ -1,9 +1,20 @@
 <h1>All posts</h1>
 <hr>
+{# Search #}
 <section id="form-search">
     {% include "components/all_posts/form_search.html" %}
 </section>
+{# End search #}
 <hr>
-<section id="all-posts">
-    {% include "components/all_posts/list.html" %}
+<section>
+    {# List posts #}
+    <div id="all-posts">
+        {% include "components/all_posts/list.html" %}
+    </div>
+    {# End list posts #}
+    {# Paginator #}
+    <div id="paginator">
+        {% include "components/all_posts/_button_paginator.html" %}
+    </div>
+    {# End paginator #}
 </section>
