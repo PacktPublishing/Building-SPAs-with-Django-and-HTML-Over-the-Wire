@@ -5,6 +5,7 @@
     --color__background: #f6f4f3;
     --color__gray: #ccc;
     --color__black: #000;
+    --color__white: #fff;
     --color__active: #00a0ff;
 }
 
@@ -35,8 +36,15 @@ body {
   align-items: center;
 }
 
+.nav__link {
+    display: inline-block;
+    padding: .5rem;
+}
+
 .nav__link.active {
-    color: var(--color__active);
+
+    background-color: var(--color__active);
+    color: var(--color__white);
     text-decoration: none;
 }
 

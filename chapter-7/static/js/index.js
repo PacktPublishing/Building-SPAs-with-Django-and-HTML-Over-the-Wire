@@ -8,6 +8,24 @@ const myWebSocket = new WebSocket(`${document.body.dataset.scheme === "http" ? "
     FUNCTIONS
 */
 
+
+/**
+ * @description
+ * @param {Event} event
+ * @returns {void}
+ */
+function changePage(event) {
+    event.preventDefault();
+    sendData({
+        action: "Change page",
+        data: {
+            page: event.target.dataset.page,
+            id: event.target.dataset.id
+        }
+    }, myWebSocket);
+}
+
+
 /**
  * Send data to WebSockets server
  * @param {string} message
@@ -48,11 +66,6 @@ function setEventsNavigation(webSocket) {
         link.removeEventListener("click", handleClickNavigation, false);
         link.addEventListener("click", handleClickNavigation, false);
     });
-    // Logout
-    const buttonLogout = document.querySelector("#logout");
-    if (buttonLogout !== null) {
-        buttonLogout.addEventListener("click", logout, false);
-    }
 }
 
 
@@ -120,6 +133,14 @@ function updateEvents() {
     if (searchForm !== null) {
         searchForm.removeEventListener("submit", search, false);
         searchForm.addEventListener("submit", search, false);
+    }
+    // Link to single post
+    const linksPostItem = document.querySelectorAll(".post-item__link");
+    if (linksPostItem !== null) {
+        linksPostItem.forEach(link => {
+            link.removeEventListener("click", changePage, false);
+            link.addEventListener("click", changePage, false);
+        });
     }
     // Paginator
     const paginator = document.querySelector("#paginator");

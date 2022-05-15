@@ -1,4 +1,4 @@
-from .models import Post
+from .models import Post, Comment
 from .forms import SearchForm, CommentForm
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -12,6 +12,7 @@ def send_page(self, data={}):
     # Prepare context data for page
     page = data["page"]
     context = {}
+    data_reverse = {}
     match page:
         case "all posts":
             context = {
@@ -20,10 +21,17 @@ def send_page(self, data={}):
                 "next_page": 2,
                 "is_last_page": (Post.objects.count() // POST_PER_PAGE) == 2,
             }
-        case "single":
-            context = {"post": Post.objects.get(id=data["id"]), "form": CommentForm()}
+        case "single post":
+            post = Post.objects.get(id=data["id"])
+            context = {
+                "post": post,
+                "form": CommentForm(),
+                "comments": Comment.objects.filter(post=post),
+            }
+            data_reverse = {"slug": post.slug}
 
     # Render HTML nav and send to client
+    context.update({"active_nav": page})
     self.send_html(
         {
             "selector": "#nav",
@@ -37,7 +45,7 @@ def send_page(self, data={}):
         {
             "selector": "#main",
             "html": render_to_string(f"pages/{template_page}.html", context),
-            "url": reverse(page),
+            "url": reverse(page, kwargs=data_reverse),
         }
     )
 

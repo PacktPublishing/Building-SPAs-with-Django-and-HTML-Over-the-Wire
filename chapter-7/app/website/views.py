@@ -11,7 +11,7 @@ def all_posts(request):
         {
             "posts": Post.objects.all()[:5],
             "page": "pages/all_posts.html",
-            "active_nav": "all_posts",
+            "active_nav": "all posts",
             "form": SearchForm(),
             "next_page": 2,
             "is_last_page": (Post.objects.count() // POST_PER_PAGE) == 2,
@@ -27,6 +27,7 @@ def single_post(request, slug):
         {
             "post": post,
             "page": "pages/single_post.html",
+            "active_nav": "single post",
             "comments": Comment.objects.filter(post=post),
             "form": CommentForm(),
         },
@@ -37,7 +38,7 @@ def about(request):
     return render(
         request,
         "base.html",
-        {"page": "pages/about_us.html", "active_nav": "about"},
+        {"page": "pages/about_us.html", "active_nav": "about us"},
     )
 
 
