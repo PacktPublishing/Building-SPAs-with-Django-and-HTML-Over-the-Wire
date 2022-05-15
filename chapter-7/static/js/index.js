@@ -75,14 +75,22 @@ myWebSocket.addEventListener("message", (event) => {
     const data = JSON.parse(event.data);
     // Renders the HTML received from the Consumer
     const selector = document.querySelector(data.selector);
-    // If append is received, it will be appended. Otherwise the entire DOM will be replaced.
-    if (data.append) {
-        selector.innerHTML += data.html;
-    } else {
-        selector.innerHTML = data.html;
+    // We only allow all users to render if we receive a broadcast as true and it is at the same url.
+    if (
+        data.broadcast === undefined ||
+        !data.broadcast ||
+        (data.broadcast && data.url === document.location.pathname)
+        ) {
+        // If append is received, it will be appended. Otherwise the entire DOM will be replaced.
+        if (data.append) {
+            selector.innerHTML += data.html;
+        } else {
+            selector.innerHTML = data.html;
+        }
+        // Update URL
+        history.pushState({}, "", data.url)
     }
-    // Update URL
-    history.pushState({}, "", data.url)
+
     /**
      *  Reassigns the events of the newly rendered HTML
      */
@@ -113,9 +121,25 @@ function search(event) {
 function addNextPaginator(event) {
     const nextPage = event.target.dataset.nextPage;
     sendData({
-        action: "Add new posts",
+        action: "Add next posts",
         data: {
             page: nextPage
+        },
+    }, myWebSocket);
+}
+
+
+function addComment(event) {
+    event.preventDefault();
+    const author = event.target.querySelector("#author").value;
+    const content = event.target.querySelector("#content").value;
+    const postId = event.target.dataset.postId;
+    sendData({
+        action: "Add comment",
+        data: {
+            author: author,
+            content: content,
+            post_id: postId
         },
     }, myWebSocket);
 }
@@ -133,6 +157,12 @@ function updateEvents() {
     if (searchForm !== null) {
         searchForm.removeEventListener("submit", search, false);
         searchForm.addEventListener("submit", search, false);
+    }
+    // Comment form
+    const commentForm = document.querySelector("#comment-form");
+    if (commentForm !== null) {
+        commentForm.removeEventListener("submit", addComment, false);
+        commentForm.addEventListener("submit", addComment, false);
     }
     // Link to single post
     const linksPostItem = document.querySelectorAll(".post-item__link");

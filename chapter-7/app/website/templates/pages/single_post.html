@@ -14,7 +14,7 @@
     {# Comments #}
     <div id="comments">
         <h2>Comments</h2>
-        <form id="comment-form" action="">
+        <form id="comment-form" action="" data-post-id="{{ post.id }}">
             {{ form.author }}
             {{ form.content }}
             <input class="button" type="submit" value="Add">

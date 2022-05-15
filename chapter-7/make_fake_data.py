@@ -8,8 +8,10 @@ Post.objects.all().delete()
 # Create fake object
 fake = Faker()
 
+
 def get_full_name():
     return f"{fake.first_name()} {fake.last_name()}"
+
 
 # Create 30 posts
 for _ in range(30):

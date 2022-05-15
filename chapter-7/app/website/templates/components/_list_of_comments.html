@@ -1,7 +1,3 @@
 {% for comment in comments %}
-    <article>
-        <h2>{{ comment.author }}</h2>
-        <p>{{ comment.content }}</p>
-        <p>{{ comment.created_at }}</p>
-    </article>
+    {% include "components/_single_comment.html" with comment=comment %}
 {% endfor %}

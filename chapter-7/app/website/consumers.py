@@ -1,17 +1,18 @@
 # app/website/consumers.py
 from channels.generic.websocket import JsonWebsocketConsumer
+from asgiref.sync import async_to_sync
 import app.website.actions as actions
 
 
 class BlogConsumer(JsonWebsocketConsumer):
+    room_name = "broadcast"
+
     def connect(self):
         """Event when client connects"""
         # Accept the connection
         self.accept()
-        # Make session task list
-        if "tasks" not in self.scope["session"]:
-            self.scope["session"]["tasks"] = []
-            self.scope["session"].save()
+        # Assign the Broadcast group
+        async_to_sync(self.channel_layer.group_add)(self.room_name, self.channel_name)
 
     def disconnect(self, close_code):
         """Event when client disconnects"""
@@ -32,10 +33,10 @@ class BlogConsumer(JsonWebsocketConsumer):
                 actions.send_page(self, data)
             case "Search":
                 actions.search(self, data)
-            case "Add new posts":
+            case "Add next posts":
                 actions.add_next_posts(self, data)
             case "Add comment":
-                pass
+                actions.add_comment(self, data)
 
     def send_html(self, event):
         """Event: Send html to client"""
@@ -43,6 +44,7 @@ class BlogConsumer(JsonWebsocketConsumer):
             "selector": event["selector"],
             "html": event["html"],
             "append": "append" in event and event["append"],
+            "broadcast": event["broadcast"] if "broadcast" in event else False,
             "url": event["url"] if "url" in event else "",
         }
         self.send_json(data)
