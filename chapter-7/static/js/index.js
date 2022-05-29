@@ -129,6 +129,10 @@ function addNextPaginator(event) {
 }
 
 
+/**
+ * Event that asks the consumer to add a new comment
+ * @param event
+ */
 function addComment(event) {
     event.preventDefault();
     const author = event.target.querySelector("#author").value;
