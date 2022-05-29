@@ -9,7 +9,7 @@ def all_posts(request):
         request,
         "base.html",
         {
-            "posts": Post.objects.all()[:5],
+            "posts": Post.objects.all()[:POST_PER_PAGE],
             "page": "pages/all_posts.html",
             "active_nav": "all posts",
             "form": SearchForm(),
