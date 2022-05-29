@@ -10,7 +10,7 @@ const myWebSocket = new WebSocket(`${document.body.dataset.scheme === "http" ? "
 
 
 /**
- * @description
+ * Send message to update page
  * @param {Event} event
  * @returns {void}
  */
@@ -19,8 +19,8 @@ function changePage(event) {
     sendData({
         action: "Change page",
         data: {
-            page: event.target.dataset.page,
-            id: event.target.dataset.id
+            page: event.target.dataset.target,
+            id: event.target.dataset?.id
         }
     }, myWebSocket);
 }
@@ -41,21 +41,6 @@ function sendData(message, webSocket) {
 */
 
 /**
- * Send message to update page
- * @param {Event} event
- * @return {void}
- */
-function handleClickNavigation(event) {
-    event.preventDefault();
-    sendData({
-        action: "Change page",
-        data: {
-            page: event.target.dataset.target
-        }
-    }, myWebSocket);
-}
-
-/**
  * Send message to WebSockets server to change the page
  * @param {WebSocket} webSocket
  * @return {void}
@@ -63,8 +48,8 @@ function handleClickNavigation(event) {
 function setEventsNavigation(webSocket) {
     // Navigation
     document.querySelectorAll(".nav__link--page").forEach(link => {
-        link.removeEventListener("click", handleClickNavigation, false);
-        link.addEventListener("click", handleClickNavigation, false);
+        link.removeEventListener("click", changePage, false);
+        link.addEventListener("click", changePage, false);
     });
 }
 
