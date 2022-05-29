@@ -20,6 +20,7 @@ class Post(models.Model):
     def summary(self):
         return self.content[:100] + "..."
 
+    @property
     def get_absolute_url(self):
         return reverse("single post", kwargs={"slug": self.slug})
 
