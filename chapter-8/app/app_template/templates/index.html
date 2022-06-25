@@ -1,0 +1,23 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Hello</title>
+    <script defer type="module" src="{% static 'js/main.js' %}"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Lowercase to uppercase</h1>
+        <main data-controller="transformer">
+            <form>
+                <input type="text" data-transformer-target="myText" placeholder="Enter text">
+                <input type="button" value="Transform" data-action="click->transformer#lowercaseToUppercase">
+            </form>
+            <div id="results"></div>
+        </main>
+    </div>
+</body>
+</html>
