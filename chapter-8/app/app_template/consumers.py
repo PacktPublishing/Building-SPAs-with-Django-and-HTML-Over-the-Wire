@@ -6,8 +6,6 @@ from asgiref.sync import async_to_sync
 
 class ExampleConsumer(JsonWebsocketConsumer):
 
-    room_name = 'broadcast'
-
     def connect(self):
         """Event when client connects"""
         # Accept the connection
@@ -35,8 +33,7 @@ class ExampleConsumer(JsonWebsocketConsumer):
 
     def send_uppercase(self, data):
         """Event: Send html to client"""
-        self.send_json( {
-                'type': 'send.html', # Run 'send_html()' method
+        self.send_json({
                 'selector': '#results',
                 'html': data["text"].upper(),
             })
