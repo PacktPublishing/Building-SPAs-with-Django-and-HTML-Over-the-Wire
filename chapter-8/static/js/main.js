@@ -1,5 +1,5 @@
 import { Application } from "./vendors/stimulus.js";
-import transformer_controller from "./controllers/transformer_controller.js";
+import TransformerController from "./controllers/transformer_controller.js";
 
 /*
     INITIALIZATION
@@ -7,4 +7,4 @@ import transformer_controller from "./controllers/transformer_controller.js";
 
 // Stimulus
 window.Stimulus = Application.start();
-Stimulus.register("transformer", transformer_controller);
+Stimulus.register("transformer", TransformerController);
