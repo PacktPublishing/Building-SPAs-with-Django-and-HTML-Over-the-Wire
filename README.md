@@ -32,7 +32,18 @@ All of the project files are organized into folders. For example, Chapter01.
 The code will look like the following:
 
 ```
+function goToPreviousPage(event) { 
 
+    const newData = { 
+
+        "action": "list messages", 
+
+        "data": { 
+
+            "page": getCurrentPage() - 1, 
+
+        } 
+    }; 
 ```
 
 **Following is what you need for this book:**
@@ -46,7 +57,7 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 ### Related products <Other books you may enjoy>
 * Web Development with Django [[Packt]](https://www.packtpub.com/product/web-development-with-django/9781839212505) [[Amazon]](https://www.amazon.com/Web-Development-Django-applications-Python-based/dp/1839212500)
 
-*  Becoming an Enterprise Django Developer	[[Packt]](https://www.packtpub.com/product/becoming-an-enterprise-django-developer/9781801073639) [[Amazon]](https://www.amazon.com/Python-Microservices-Development-lightweight-microservices/dp/1801076308)
+* Becoming an Enterprise Django Developer	[[Packt]](https://www.packtpub.com/product/becoming-an-enterprise-django-developer/9781801073639) [[Amazon]](https://www.amazon.com/Becoming-Enterprise-Django-Developer-applications/dp/1801073635)
 
 ## Get to Know the Author
 **Andros Fenollosa** works as CTO in a software development studio and is an expert programmer. He combines his time with teaching, training students in Web technologies for more than a decade. On the other hand, he maintains several Opensource projects related to Python and functional programming (including his own framework: Tadam Web Framework.
