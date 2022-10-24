@@ -62,3 +62,7 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 ## Get to Know the Author
 **Andros Fenollosa** works as CTO in a software development studio and is an expert programmer. He combines his time with teaching, training students in Web technologies for more than a decade. On the other hand, he maintains several Opensource projects related to Python and functional programming (including his own framework: Tadam Web Framework.
 
+### Download a free PDF
+
+ <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
+<p align="center"> <a href="https://packt.link/free-ebook/9781803240190">https://packt.link/free-ebook/9781803240190 </a> </p>
